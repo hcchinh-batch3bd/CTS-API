@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 12.25, 9.75" name="APIDataClasses">
+  <DataContextMoniker Name="/APIDataClassesDataContext" />
+  <nestedChildShapes>
+    <classShape Id="2087cf57-f170-4583-9199-e6dcdb89190d" absoluteBounds="3.75, 3.625, 2, 2.3478011067708335">
+      <DataClassMoniker Name="/APIDataClassesDataContext/EMPLOYEE" />
+      <nestedChildShapes>
+        <elementListCompartment Id="0059e484-9170-43e8-9162-a5de5cbddd0b" absoluteBounds="3.765, 4.085, 1.9700000000000002, 1.7878011067708335" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="dab8a8d7-bfdb-4d25-9e3e-eca90fda8c48" absoluteBounds="3.75, 8.25, 2, 1.1939925130208344">
+      <DataClassMoniker Name="/APIDataClassesDataContext/TYPE_MISSION" />
+      <nestedChildShapes>
+        <elementListCompartment Id="175b9397-9f4f-4d63-8752-c4c1406d4404" absoluteBounds="3.765, 8.71, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="91f72fe4-fca6-4212-a966-1d648cfb2a27" absoluteBounds="6.5, 3.5, 2, 2.7324039713541666">
+      <DataClassMoniker Name="/APIDataClassesDataContext/MISSION" />
+      <nestedChildShapes>
+        <elementListCompartment Id="29f66e68-b40f-43fd-b13d-85a420f8a3c7" absoluteBounds="6.5150000000000006, 3.96, 1.9700000000000002, 2.1724039713541665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="ee1969f9-be14-45ad-b92b-8c18950d5370" absoluteBounds="10, 2.5, 2, 1.5785953776041666">
+      <DataClassMoniker Name="/APIDataClassesDataContext/MISSION_PROCESS" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4e63f5b3-d746-47aa-b9f9-ab80a011cef5" absoluteBounds="10.015, 2.96, 1.9700000000000002, 1.0185953776041665" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(5.75 : 4.79890055338542); (6.5 : 4.79890055338542)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/APIDataClassesDataContext/EMPLOYEE/EMPLOYEE_MISSION" />
+      <nodes>
+        <classShapeMoniker Id="2087cf57-f170-4583-9199-e6dcdb89190d" />
+        <classShapeMoniker Id="91f72fe4-fca6-4212-a966-1d648cfb2a27" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(5.75 : 8.84699625651042); (7.5 : 8.84699625651042); (7.5 : 6.23240397135417)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/APIDataClassesDataContext/TYPE_MISSION/TYPE_MISSION_MISSION" />
+      <nodes>
+        <classShapeMoniker Id="dab8a8d7-bfdb-4d25-9e3e-eca90fda8c48" />
+        <classShapeMoniker Id="91f72fe4-fca6-4212-a966-1d648cfb2a27" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(4.75 : 3.625); (4.75 : 2.96875); (10 : 2.96875)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/APIDataClassesDataContext/EMPLOYEE/EMPLOYEE_MISSION_PROCESS" />
+      <nodes>
+        <classShapeMoniker Id="2087cf57-f170-4583-9199-e6dcdb89190d" />
+        <classShapeMoniker Id="ee1969f9-be14-45ad-b92b-8c18950d5370" />
+      </nodes>
+    </associationConnector>
+    <associationConnector edgePoints="[(8.5 : 3.78929768880208); (10 : 3.78929768880208)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/APIDataClassesDataContext/MISSION/MISSION_MISSION_PROCESS" />
+      <nodes>
+        <classShapeMoniker Id="91f72fe4-fca6-4212-a966-1d648cfb2a27" />
+        <classShapeMoniker Id="ee1969f9-be14-45ad-b92b-8c18950d5370" />
+      </nodes>
+    </associationConnector>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>
