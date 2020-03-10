@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Công cụ tạo tin ảnh mới từ trang tin tức bất kỳ bạn muốn</title>
+    <!-- Required meta tags -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&amp;subset=latin-ext,vietnamese"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body ng-app="MyApp" ng-controller="MyController">
+    <div class="container-fluid my-3">
+        <div class="row">
+            <div class="col-md-6 form-news">
+                <div style="margin-bottom:10px;">
+                    <h4>Hướng dẫn</h4>
+                    <p>Bước 1: Vào trang tin tức bất kỳ lấy link bài viết hay: <a href="https://cafebiz.vn" target="_blank">Cafebiz.vn</a> | <a href="https://vnexpress.net/" target="_blank">Vnexpress.net</a> | <a href="https://tuoitre.vn/" target="_blank">Tuoitre.vn</a></p>
+                    <p>Bước 2: Bấm vào Tóm tắt Nội dung bên dưới để lấy nội dung tóm tắt</p>
+                    <p>Bước 3: Bấm vào Remove Nội Dung để xóa nội dung sai hoặc dư thừa</p>
+                    <p>Bước 3: Điền tất cả thông tin và bấm Export lấy hình ảnh</p>
+                    <button class="btn btn-primary">
+                        <a href="https://ilazytoread.herokuapp.com/" target="_blank" style="color:white;">Tóm Tắt Nội Dung</a>
+                    </button>
+                    <button class="btn btn-primary">
+                        <a href="https://www.joydeepdeb.com/tools/find-replace.html" target="_blank" style="color:white;">Remove Nội Dung</a>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label for="typeNews">Thể Loại</label>
+                    <input type="text" class="form-control" name="typeNews" id="typeNews" ng-model="typeNews">
+                </div>
+                <div class="form-group">
+                    <label for="typeNews">Hình ảnh</label>
+                    <input type="text" class="form-control" name="typeNews" id="typeNews" ng-model="imgSrc">
+                </div>
+                <div class="form-group">
+                    <label for="typeNews">Nguồn báo</label>
+                    <input type="text" class="form-control" name="typeNews" id="typeNews" ng-model="source">
+                </div>
+                <div class="form-group">
+                    <label for="typeNews">Tiêu đề</label>
+                    <input type="text" class="form-control" name="title" id="title" ng-model="title">
+                </div>
+                <div class="form-group">
+                    <label for="typeNews">Nội dung</label>
+                    <textarea class="form-control description" name="description" id="description" ng-model="description"></textarea>
+                </div>
+                <button type="button" name="exportElm" id="exportElm" class="btn btn-primary"
+                    ng-click="OpenPopupWindow()">Export</button>
+            </div>
+            <div class="col-md-6">
+                <div>
+                    <p>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </p>
+                </div>
+                <div id="capture" class="card mx-auto" style="width: 600px;height: 600px;">
+                    <figure style="height: 270px;">
+                        <img class="card-img-top" src="{{imgSrc}}">
+                        <div class="thumbnail-news">
+                            <img class="img-fluid" src="logo-j2team.png" alt="">
+                        </div>
+                    </figure>
+                    <div class="card-body" style="height: 330px;padding: 1rem;">
+                        <div class="type-source">
+                            <div class="type-news-preview" style="font-size: 1rem;">{{typeNews}}</div>
+                            <span class="source" style="font-size: 1rem">{{source}}</span>
+                        </div>
+                        <h4 class="card-title" style="font-size: 22px;margin-top: 0.4rem;margin-bottom: 0.4rem;">{{title}}</h4>
+                        <p class="card-text" style="font-size: 16px;height: 220px;overflow: hidden;">{{description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script type="text/javascript">
+        var app = angular.module('MyApp', [])
+        app.controller('MyController', function ($scope, $window) {
+            $scope.OpenPopupWindow = function () {
+                var $popup = $window.open("popup.html", "popup", "width=600,height=600,left=20,top=20");
+                $popup.typeNews = $scope.typeNews;
+                $popup.imgSrc = $scope.imgSrc;
+                $popup.source = $scope.source;
+                $popup.title = $scope.title;
+                $popup.description = $scope.description;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?><Database Name="CTSDatabase" Class="APIDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="WebSettings" ConnectionString="Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\CTSDatabase.mdf;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="CTSDatabaseConnectionString" Provider="System.Data.SqlClient" />
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="DB_A55B63_huynhchinh307" Class="APIDataClassesDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=SQL5052.site4now.net;Initial Catalog=DB_A55B63_huynhchinh307;Persist Security Info=True;User ID=DB_A55B63_huynhchinh307_admin" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="DB_A55B63_huynhchinh307ConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.EMPLOYEE" Member="EMPLOYEEs">
     <Type Name="EMPLOYEE">
       <Column Name="id_employee" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -7,10 +7,10 @@
       <Column Name="email" Type="System.String" DbType="VarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
       <Column Name="point" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="level_employee" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="level_employee" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
       <Column Name="password" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
       <Column Name="status" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
-      <Column Name="apiKey" Type="System.String" DbType="VarChar(MAX)" CanBeNull="true" />
+      <Column Name="apiKey" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
       <Association Name="EMPLOYEE_MISSION" Member="MISSIONs" ThisKey="id_employee" OtherKey="id_employee" Type="MISSION" />
       <Association Name="EMPLOYEE_MISSION_PROCESS" Member="MISSION_PROCESSes" ThisKey="id_employee" OtherKey="id_employee" Type="MISSION_PROCESS" />
     </Type>
@@ -18,7 +18,7 @@
   <Table Name="dbo.TYPE_MISSION" Member="TYPE_MISSIONs">
     <Type Name="TYPE_MISSION">
       <Column Name="id_type" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="name_type_mission" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
       <Association Name="TYPE_MISSION_MISSION" Member="MISSIONs" ThisKey="id_type" OtherKey="id_type" Type="MISSION" />
     </Type>
   </Table>
@@ -29,14 +29,14 @@
       <Column Name="Stardate" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
       <Column Name="point" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="exprie" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="describe" Type="System.String" DbType="VarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="describe" Type="System.String" DbType="NVarChar(MAX) NOT NULL" CanBeNull="false" />
       <Column Name="status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Count" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="id_type" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="id_employee" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="MISSION_MISSION_PROCESS" Member="MISSION_PROCESSes" ThisKey="id_mission" OtherKey="id_mission" Type="MISSION_PROCESS" />
       <Association Name="EMPLOYEE_MISSION" Member="EMPLOYEE" ThisKey="id_employee" OtherKey="id_employee" Type="EMPLOYEE" IsForeignKey="true" />
-      <Association Name="TYPE_MISSION_MISSION" Member="TYPE_MISSION" ThisKey="id_type" OtherKey="id_type" Type="TYPE_MISSION" IsForeignKey="true" />
+      <Association Name="TYPE_MISSION_MISSION" Member="TYPE_MISSION" ThisKey="id_type" OtherKey="id_type" Type="TYPE_MISSION" IsForeignKey="true" DeleteRule="CASCADE" DeleteOnNull="true" />
     </Type>
   </Table>
   <Table Name="dbo.MISSION_PROCESS" Member="MISSION_PROCESSes">
@@ -44,7 +44,7 @@
       <Column Name="id_employee" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="id_mission" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="date" Type="System.DateTime" DbType="Date NOT NULL" CanBeNull="false" />
+      <Column Name="date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Association Name="EMPLOYEE_MISSION_PROCESS" Member="EMPLOYEE" ThisKey="id_employee" OtherKey="id_employee" Type="EMPLOYEE" IsForeignKey="true" />
       <Association Name="MISSION_MISSION_PROCESS" Member="MISSION" ThisKey="id_mission" OtherKey="id_mission" Type="MISSION" IsForeignKey="true" />
     </Type>

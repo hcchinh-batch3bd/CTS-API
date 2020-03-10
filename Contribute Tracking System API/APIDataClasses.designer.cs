@@ -22,7 +22,7 @@ namespace Contribute_Tracking_System_API
 	using System;
 	
 	
-	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="CTSDatabase")]
+	[global::System.Data.Linq.Mapping.DatabaseAttribute(Name="DB_A55B63_huynhchinh307")]
 	public partial class APIDataClassesDataContext : System.Data.Linq.DataContext
 	{
 		
@@ -42,7 +42,7 @@ namespace Contribute_Tracking_System_API
     #endregion
 		
 		public APIDataClassesDataContext() : 
-				base(global::System.Configuration.ConfigurationManager.ConnectionStrings["CTSDatabaseConnectionString"].ConnectionString, mappingSource)
+				base(global::System.Configuration.ConfigurationManager.ConnectionStrings["DB_A55B63_huynhchinh307ConnectionString"].ConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
@@ -120,7 +120,7 @@ namespace Contribute_Tracking_System_API
 		
 		private int _point;
 		
-		private int _level_employee;
+		private bool _level_employee;
 		
 		private string _password;
 		
@@ -144,7 +144,7 @@ namespace Contribute_Tracking_System_API
     partial void OndateChanged();
     partial void OnpointChanging(int value);
     partial void OnpointChanged();
-    partial void Onlevel_employeeChanging(int value);
+    partial void Onlevel_employeeChanging(bool value);
     partial void Onlevel_employeeChanged();
     partial void OnpasswordChanging(string value);
     partial void OnpasswordChanged();
@@ -260,8 +260,8 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_level_employee", DbType="Int NOT NULL")]
-		public int level_employee
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_level_employee", DbType="Bit NOT NULL")]
+		public bool level_employee
 		{
 			get
 			{
@@ -320,7 +320,7 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_apiKey", DbType="VarChar(MAX)")]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_apiKey", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
 		public string apiKey
 		{
 			get
@@ -394,7 +394,7 @@ namespace Contribute_Tracking_System_API
 		
 		private int _id_type;
 		
-		private string _name;
+		private string _name_type_mission;
 		
 		private EntitySet<MISSION> _MISSIONs;
 		
@@ -404,8 +404,8 @@ namespace Contribute_Tracking_System_API
     partial void OnCreated();
     partial void Onid_typeChanging(int value);
     partial void Onid_typeChanged();
-    partial void OnnameChanging(string value);
-    partial void OnnameChanged();
+    partial void Onname_type_missionChanging(string value);
+    partial void Onname_type_missionChanged();
     #endregion
 		
 		public TYPE_MISSION()
@@ -434,22 +434,22 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
-		public string name
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name_type_mission", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string name_type_mission
 		{
 			get
 			{
-				return this._name;
+				return this._name_type_mission;
 			}
 			set
 			{
-				if ((this._name != value))
+				if ((this._name_type_mission != value))
 				{
-					this.OnnameChanging(value);
+					this.Onname_type_missionChanging(value);
 					this.SendPropertyChanging();
-					this._name = value;
-					this.SendPropertyChanged("name");
-					this.OnnameChanged();
+					this._name_type_mission = value;
+					this.SendPropertyChanged("name_type_mission");
+					this.Onname_type_missionChanged();
 				}
 			}
 		}
@@ -663,7 +663,7 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_describe", DbType="VarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_describe", DbType="NVarChar(MAX) NOT NULL", CanBeNull=false)]
 		public string describe
 		{
 			get
@@ -805,7 +805,7 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TYPE_MISSION_MISSION", Storage="_TYPE_MISSION", ThisKey="id_type", OtherKey="id_type", IsForeignKey=true)]
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TYPE_MISSION_MISSION", Storage="_TYPE_MISSION", ThisKey="id_type", OtherKey="id_type", IsForeignKey=true, DeleteOnNull=true, DeleteRule="CASCADE")]
 		public TYPE_MISSION TYPE_MISSION
 		{
 			get
@@ -870,7 +870,7 @@ namespace Contribute_Tracking_System_API
 		
 		private int _status;
 		
-		private System.DateTime _date;
+		private System.Nullable<System.DateTime> _date;
 		
 		public MISSION_PROCESS()
 		{
@@ -924,8 +924,8 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date NOT NULL")]
-		public System.DateTime date
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date")]
+		public System.Nullable<System.DateTime> date
 		{
 			get
 			{
