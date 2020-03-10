@@ -126,6 +126,8 @@ namespace Contribute_Tracking_System_API
 		
 		private bool _status;
 		
+		private string _apiKey;
+		
 		private EntitySet<MISSION> _MISSIONs;
 		
     #region Extensibility Method Definitions
@@ -148,6 +150,8 @@ namespace Contribute_Tracking_System_API
     partial void OnpasswordChanged();
     partial void OnstatusChanging(bool value);
     partial void OnstatusChanged();
+    partial void OnapiKeyChanging(string value);
+    partial void OnapiKeyChanged();
     #endregion
 		
 		public EMPLOYEE()
@@ -276,7 +280,7 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_password", DbType="Text NOT NULL", CanBeNull=false, UpdateCheck=UpdateCheck.Never)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_password", DbType="VarChar(MAX) NOT NULL", CanBeNull=false)]
 		public string password
 		{
 			get
@@ -312,6 +316,26 @@ namespace Contribute_Tracking_System_API
 					this._status = value;
 					this.SendPropertyChanged("status");
 					this.OnstatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_apiKey", DbType="VarChar(MAX)")]
+		public string apiKey
+		{
+			get
+			{
+				return this._apiKey;
+			}
+			set
+			{
+				if ((this._apiKey != value))
+				{
+					this.OnapiKeyChanging(value);
+					this.SendPropertyChanging();
+					this._apiKey = value;
+					this.SendPropertyChanged("apiKey");
+					this.OnapiKeyChanged();
 				}
 			}
 		}
