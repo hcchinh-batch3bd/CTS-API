@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Web.Http.Cors;
 
+
 namespace Contribute_Tracking_System_API.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*", exposedHeaders: "X-My-Header")]
@@ -21,18 +22,18 @@ namespace Contribute_Tracking_System_API.Controllers
         [HttpGet]
         public IHttpActionResult GetCheckLogin([FromUri] string id, [FromUri] string pw)
         {
-            string message = "Bad request";
-            bool status = false;
+            string _message = "Bad request";
+            bool _status = false;
             if (id!=null && pw!=null)
             {
-                message = "Đăng nhập thành công !!";
-                status = true;
+                _message = "Đăng nhập thành công !!";
+                _status = true;
                 var key = db.EMPLOYEEs.Where(x => x.id_employee == int.Parse(id) && x.password == CreateMD5Hash(pw)).Select(s => new { s.name_employee, s.point, s.apiKey });
                 if (!key.Any())
-                    message = "ID đăng nhập hoặc mật khẩu không hợp lê !!";
-                return Ok(new { results = key, status = status, message = message });
+                    _message = "ID đăng nhập hoặc mật khẩu không hợp lệ !!";
+                return Ok(new { results = key, status = _status, message = _message });
             }
-            else return Ok(new { results = "", status = status, message = message });
+            else return Ok(new { results = "", status = _status, message = _message });
         }
             
            
@@ -44,11 +45,10 @@ namespace Contribute_Tracking_System_API.Controllers
             bool _status = false;
             if (mail!=null)
             {
-                _message = "Đăng nhập thành công !!";
                 _status = true;
                 Random rnd = new Random();
                 int otp = rnd.Next(000000, 999999);
-                string msg = "OTP để xác nhận lấy lại mật khẩu của bản : " + otp;
+                string msg = "OTP để xác nhận lấy lại mật khẩu của bạn : " + otp;
                 bool f = SendOTP("lvx51523@outlook.com", mail, "Xác thực mail OTP", msg);
                 if (f)
                 {
@@ -77,10 +77,66 @@ namespace Contribute_Tracking_System_API.Controllers
                     _message = " Đổi mật khẩu thành công";
                 }
             }
-            else _message = "Ban chua nhap day du thong tin";
+            else _message = "Bạn chưa nhập dầy đủ thông tin !!";
             return Ok(new { results = "", status = _status, message = _message });
         }
-        // GET: Account
+        //Load List Employee
+        [Route("Account/ListEmployee")]
+        [HttpGet]
+        public IHttpActionResult GetListEmployee([FromUri] string apiKey)
+        {
+            List<object> key = new List<object>();
+            string _message = "Bad request!!";
+            bool _status = true;
+            if (apiKey != null)
+            {
+                int checkApiKey = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.apiKey).Count();
+                if(checkApiKey != 0)
+                {
+                    _message = "Danh sách nhân viên!!";
+                var checkLevel = db.EMPLOYEEs.Select(x => new { x.id_employee, x.level_employee, x.status });
+                foreach (var item in checkLevel)
+                {
+                    if(item.level_employee == true && item.status == true )
+                    {
+                        key.AddRange(LoadData(item.id_employee, "Quản lý", "Hoạt động"));
+                    }
+                    else if (item.level_employee == true && item.status == false)
+                        {
+                        key.AddRange(LoadData(item.id_employee, "Quản lý", "Nghỉ việc"));
+                        }
+                    else if (item.level_employee == false && item.status == true)
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Nhân viên", "Hoạt động"));
+                        }
+                    else
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Nhân viên", "Nghỉ việc"));
+                        } 
+                        if (!key.Any())
+                    {
+                        _message = "Không có danh sách";
+                    }
+                }
+                }
+                return Ok(new { results = key, status = _status, message = _message });
+            }
+              
+            else return Ok(new { results = "", status = _status, message = _message });
+        }
+        private IEnumerable<object> LoadData(int id, string level, string status)
+        {
+            return db.EMPLOYEEs.Where(x=> x.id_employee == id).Select(x => new {
+                x.id_employee,
+                x.name_employee,
+                x.email,
+                x.date,
+                x.point,
+                level,
+                status
+            });
+        }
+        // GetET: Account
         public IEnumerable<EMPLOYEE> Get()
         {
             return db.EMPLOYEEs.ToList<EMPLOYEE>();
