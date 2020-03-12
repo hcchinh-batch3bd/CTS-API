@@ -54,10 +54,42 @@ namespace Contribute_Tracking_System_API.Controllers
             }
         }
 
+        [Route("Type_Mission")]
+        [HttpPut]
+        // PUT: /Type_Mission?apiKey
+        public IHttpActionResult Put([FromBody]TYPE_MISSION type_mission, [FromUri]string apiKey)
+        {
+            if (type_mission != null)
+            {
+                var check = db.EMPLOYEEs.Where(x => x.apiKey.Equals(apiKey)).Count();
+                if (check > 0)
+                {
+                    var update = db.TYPE_MISSIONs.Where(x => x.id_type == type_mission.id_type).ToList();
+                    update.ForEach(x =>
+                    {
+                        x.name_type_mission = type_mission.name_type_mission;
+                        x.status = type_mission.status;
+                        x.id_employee = type_mission.id_employee;
+                        x.date = type_mission.date;
+                    });
+                    db.SubmitChanges();
+                    return Ok(new { massage = "Sửa loại nhiệm vụ thành công!" });
+                }
+                else
+                {
+                    return Ok(new { massage = "Sửa loại nhiệm vụ không thành công!" });
+                }
+            }
+            else
+            {
+                return Ok(new { massage = "Vui lòng nhập thông tin!" });
+            }
+        }
 
         // PUT:Type_Mission/5
-        public void Put(int id, [FromBody]string value)
+        public void Put([FromUri]int id, [FromUri]string apiKey)
         {
+
         }
 
         // DELETE: Type_Mission/5
