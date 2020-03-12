@@ -59,6 +59,27 @@ namespace Contribute_Tracking_System_API.Controllers
             return Ok(new { results = "", status = _status, message = _message });
 
         }
+        [Route("Account/Changepassword")]
+        [HttpPut]
+        public IHttpActionResult ChangePassword([FromUri] string passnew, [FromUri] string passold, [FromUri] string apiKey)
+        {
+            string _message = "";
+            bool _status = true;
+            if (passnew != null && passold != null && apiKey != null)
+            {
+                _message = "Mật khẩu cũ không đúng !!";
+                _status = true;
+                var changpass = db.EMPLOYEEs.Where(x => x.password == passold && x.apiKey == apiKey).Select(x => x).SingleOrDefault();
+                if (changpass != null)
+                {
+                    changpass.password = passnew;
+                    db.SubmitChanges();
+                    _message = " Đổi mật khẩu thành công";
+                }
+            }
+            else _message = "Ban chua nhap day du thong tin";
+            return Ok(new { results = "", status = _status, message = _message });
+        }
         // GET: Account
         public IEnumerable<EMPLOYEE> Get()
         {
