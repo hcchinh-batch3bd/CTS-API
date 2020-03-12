@@ -44,11 +44,10 @@ namespace Contribute_Tracking_System_API.Controllers
             bool _status = false;
             if (mail!=null)
             {
-                _message = "Đăng nhập thành công !!";
                 _status = true;
                 Random rnd = new Random();
                 int otp = rnd.Next(000000, 999999);
-                string msg = "OTP để xác nhận lấy lại mật khẩu của bản : " + otp;
+                string msg = "OTP để xác nhận lấy lại mật khẩu của bạn : " + otp;
                 bool f = SendOTP("lvx51523@outlook.com", mail, "Xác thực mail OTP", msg);
                 if (f)
                 {
