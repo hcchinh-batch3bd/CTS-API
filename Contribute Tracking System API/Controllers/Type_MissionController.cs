@@ -4,9 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Contribute_Tracking_System_API.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*", exposedHeaders: "X-My-Header")]
     public class Type_MissionController : ApiController
     {
         private APIDataClassesDataContext db = new APIDataClassesDataContext();
@@ -25,10 +27,12 @@ namespace Contribute_Tracking_System_API.Controllers
             return "value";
         }
 
-        // POST: api/Type_Mission
+
+        // POST: /Type_Mission
         public void Post([FromBody]string value)
         {
         }
+
 
         // PUT: api/Type_Mission/5
         public void Put(int id, [FromBody]string value)
