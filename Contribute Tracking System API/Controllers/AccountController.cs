@@ -79,6 +79,111 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Ban chua nhap day du thong tin";
             return Ok(new { results = "", status = _status, message = _message });
         }
+        //Load List Employee
+        [Route("Account/ListEmployee")]
+        [HttpGet]
+        public IHttpActionResult GetListEmployee([FromUri] string apiKey)
+        {
+            List<object> key = new List<object>();
+            string _message = "Bad request!!";
+            bool _status = true;
+            if (apiKey != null)
+            {
+                int checkApiKey = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.apiKey).Count();
+                if (checkApiKey != 0)
+                {
+                    _message = "Danh sách nhân viên!!";
+                    var checkLevel = db.EMPLOYEEs.Select(x => new { x.id_employee, x.level_employee, x.status });
+                    foreach (var item in checkLevel)
+                    {
+                        if (item.level_employee == true && item.status == true)
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Quản lý", "Hoạt động"));
+                        }
+                        else if (item.level_employee == true && item.status == false)
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Quản lý", "Nghỉ việc"));
+                        }
+                        else if (item.level_employee == false && item.status == true)
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Nhân viên", "Hoạt động"));
+                        }
+                        else
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Nhân viên", "Nghỉ việc"));
+                        }
+                        if (!key.Any())
+                        {
+                            _message = "Không có danh sách";
+                        }
+                    }
+                }
+                return Ok(new { results = key, status = _status, message = _message });
+            }
+
+            else return Ok(new { results = "", status = _status, message = _message });
+        }
+        private IEnumerable<object> LoadData(int id, string level, string status)
+        {
+            return db.EMPLOYEEs.Where(x => x.id_employee == id).Select(x => new {
+                x.id_employee,
+                x.name_employee,
+                x.email,
+                x.date,
+                x.point,
+                level,
+                status
+            });
+        }
+        //API xóa một nhân viên
+        [Route("Account/{id}/DeleteEmployee")]
+        [HttpPut]
+        public IHttpActionResult DeleteEmployee(int id, [FromUri] string apiKey)
+        {
+            string _message = "Bad request";
+            if (apiKey != null && id != null)
+            {
+                bool CheckApi = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.level_employee).FirstOrDefault();
+                if (CheckApi)
+                {
+                    bool changeStatus = false;
+                    int checkID = db.EMPLOYEEs.Where(x => x.id_employee == id).Count();
+                    if (checkID > 0)
+                    {
+                        EMPLOYEE employee = db.EMPLOYEEs.Where(x => x.id_employee == id).SingleOrDefault();
+                        if (employee.status == true)
+                        {
+                            employee.status = changeStatus;
+                            db.SubmitChanges();
+                            _message = "Xóa thành công";
+                        }
+                    }
+                }
+                else _message = "Không có quyền xóa";
+            }
+            return Ok(new { results = "", message = _message });
+        }
+
+        //API xếp hạng nhân viên theo điểm
+        [Route("Account/RankEmployee")]
+        [HttpGet]
+        public IHttpActionResult RankEmployee([FromUri] string apiKey)
+        {
+            object key = new object();
+            bool _status = true;
+            string _message = "Bad request";
+            if (apiKey != null)
+            {
+                int CheckApi = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.apiKey).Count();
+                if (CheckApi > 0)
+                {
+                    key = db.EMPLOYEEs.Where(x => x.status == true).OrderByDescending(x => x.point).Select(x => new { x.id_employee, x.name_employee, x.point });
+                    _message = "Bảng xếp hạng nhân viên";
+                }
+                return Ok(new { results = key, status = _status, message = _message });
+            }
+            return Ok(new { results = "", status = _status, message = _message });
+        }
         // GET: Account
         public IEnumerable<EMPLOYEE> Get()
         {
