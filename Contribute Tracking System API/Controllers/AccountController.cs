@@ -34,8 +34,54 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             else return Ok(new { results = "", status = status, message = message });
         }
-            
-           
+        //Hủy Mission
+        [Route("Mission/{id}/ClearMission")]
+        [HttpPut]
+        public IHttpActionResult ClearMission(int id, [FromUri] string apiKey)
+        {
+            if (id != null && apiKey != null)
+            {
+                var check = db.EMPLOYEEs.Where(s => s.apiKey == apiKey).Select(a => a.id_employee).SingleOrDefault();
+                if (check > 0)
+                {
+                    var level = db.EMPLOYEEs.Where(b => b.id_employee == check && b.level_employee == true).Select(b => b.id_employee).SingleOrDefault();
+                    if (level > 0)
+                    {
+                        var check2 = db.MISSIONs.Where(x => x.id_mission == id).Select(x => x.id_mission).SingleOrDefault();
+                        if (check2 > 0)
+                        {
+                            var clear = db.MISSIONs.Where(x => x.id_employee == level && x.id_mission == check2).ToList();
+                            clear.ForEach(x => { x.status = -1; });
+                            db.SubmitChanges();
+                            return Ok(new { message = "Tạm hủy thành công !" });
+                        }
+                        else
+                        {
+                            return Ok(new { message = "Không có id misson này!" });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new { message = "Bạn không đủ quyền hạn này" });
+                    }
+                }
+                else
+                {
+                    return Ok(new {  message = "Không có id employee này!" });
+
+                }
+            }
+            else
+            {
+                return Ok(new { message = "Bạn chưa nhập id mission hoặc apiKey!" });
+
+        }
+
+
+        }
+
+
+
         [Route("Account/OTP")]
         [HttpGet]
         public IHttpActionResult SendOTP([FromUri] string mail)
