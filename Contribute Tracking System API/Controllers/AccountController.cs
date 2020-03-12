@@ -80,7 +80,49 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Ban chua nhap day du thong tin";
             return Ok(new { results = "", status = _status, message = _message });
         }
-        // GET: Account
+        //Load List Employee
+        [Route("Account/ListEmployee")]
+        [HttpGet]
+        public IHttpActionResult GetListEmployee([FromUri] string apiKey)
+        {
+            List<object> key = new List<object>();
+            string _message = "Bad request!!";
+            bool _status = true;
+            if (apiKey != null)
+            {
+                _message = "Danh sách nhân viên!!";
+                var checklevel = db.EMPLOYEEs.Where(x => x.status == true).Select(x => new { x.id_employee, x.level_employee });
+                foreach (var item in checklevel)
+                {
+                    if(item.level_employee == true)
+                    {
+                        key.AddRange(LoadData(item.id_employee, "Nhân Viên"));
+                    }
+                    else
+                    {
+                        key.AddRange(LoadData(item.id_employee, "Quản Lý"));
+                    }
+                    if (!key.Any())
+                    {
+                        _message = "Không có danh sách";
+                    }
+                }
+                return Ok(new { results = key, status = _status, message = _message });
+            }
+              
+            else return Ok(new { results = "", status = _status, message = _message });
+        }
+        private IEnumerable<object> LoadData(int id, string level)
+        {
+            return db.EMPLOYEEs.Where(x => x.status == true && x.id_employee == id).Select(x => new {
+                x.id_employee,
+                x.name_employee,
+                x.email,
+                x.date,
+                x.point,
+                level });
+        }
+        // GetET: Account
         public IEnumerable<EMPLOYEE> Get()
         {
             return db.EMPLOYEEs.ToList<EMPLOYEE>();

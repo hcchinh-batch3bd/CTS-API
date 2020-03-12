@@ -30,16 +30,16 @@ namespace Contribute_Tracking_System_API.Controllers
                     switch (trangthai)
                     {
                         case -1:
-                            key.Add(LoadData(item.id, checksoluong, "Hủy"));
+                            key.AddRange(LoadData(item.id, checksoluong, "Hủy"));
                             break;
                         case 0:
-                            key.Add(LoadData(item.id, checksoluong, "Đang duyệt"));
+                            key.AddRange(LoadData(item.id, checksoluong, "Đang duyệt"));
                             break;
                         case 1:
-                            key.Add(LoadData(item.id, checksoluong, "Đang chạy"));
+                            key.AddRange(LoadData(item.id, checksoluong, "Đang chạy"));
                             break;
                         default:
-                            key.Add(LoadData(item.id, checksoluong, "Lỗi"));
+                            key.AddRange(LoadData(item.id, checksoluong, "Lỗi"));
                             break;
                     }
                 }
@@ -48,12 +48,11 @@ namespace Contribute_Tracking_System_API.Controllers
 
         }
         //Thay đổi dữ liệu status , count khi = 0. 
-        private object LoadData(int id, int checksoluong, string trangthai)
+        private IEnumerable<object> LoadData(int id, int checksoluong, string trangthai)
         {
-            var key = new object();
             if (checksoluong == 0)
             {
-                key = from a in db.MISSIONs
+                return  from a in db.MISSIONs
                       join b in db.TYPE_MISSIONs on a.id_type equals b.id_type
                       join c in db.EMPLOYEEs on a.id_employee equals c.id_employee
                       where a.id_mission == id
@@ -73,7 +72,7 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             else
             {
-                key = from a in db.MISSIONs
+               return from a in db.MISSIONs
                       where a.id_mission == id
                       join b in db.TYPE_MISSIONs on a.id_type equals b.id_type
                       join c in db.EMPLOYEEs on a.id_employee equals c.id_employee
@@ -91,7 +90,6 @@ namespace Contribute_Tracking_System_API.Controllers
                           c.name_employee
                       };
             }
-            return key;
         }
 
         // GET: api/Mission
