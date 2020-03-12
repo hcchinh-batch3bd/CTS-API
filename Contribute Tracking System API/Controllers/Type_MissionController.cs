@@ -56,13 +56,19 @@ namespace Contribute_Tracking_System_API.Controllers
 
 
         // PUT:Type_Mission/5
-        public void Put(int id, [FromBody]string value)
+        public void Put([FromUri]int id, [FromUri]string apiKey)
         {
+            var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Count();
+            if(check > 0)
+            {
+                
+            }
         }
 
         // DELETE: Type_Mission/5
-        public void Delete(int id)
+        public void Delete([FromUri]int id)
         {
+            
         }
     }
 }
