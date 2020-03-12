@@ -48,7 +48,7 @@ namespace Contribute_Tracking_System_API.Controllers
 
         }
         //Thay đổi dữ liệu status , count khi = 0. 
-        private IEnumerable<object> LoadData(int id, int checksoluong, string trangthai)
+        private IEnumerable<object> LoadData(int id, int checksoluong, string status)
         {
             if (checksoluong == 0)
             {
@@ -64,7 +64,7 @@ namespace Contribute_Tracking_System_API.Controllers
                           a.point,
                           a.exprie,
                           a.describe,
-                          trangthai,
+                          status,
                           count = "Không giới hạn",
                           b.name_type_mission,
                           c.name_employee
@@ -84,7 +84,7 @@ namespace Contribute_Tracking_System_API.Controllers
                           a.point,
                           a.exprie,
                           a.describe,
-                          trangthai,
+                          status,
                           count = a.Count,
                           b.name_type_mission,
                           c.name_employee
