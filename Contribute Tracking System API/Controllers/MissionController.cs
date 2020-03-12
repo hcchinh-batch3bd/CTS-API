@@ -128,8 +128,8 @@ namespace Contribute_Tracking_System_API.Controllers
         public IHttpActionResult Missonavaible()
         {
 
-            string message = "";
-            bool status = true;
+            string _message = "Danh sách nhiệm vụ đang còn";
+            bool _status = true;
             List<object> key =  new List<object>();
             foreach (var t in db.MISSIONs)
             {
@@ -138,29 +138,56 @@ namespace Contribute_Tracking_System_API.Controllers
                 var idmiss = db.MISSION_PROCESSes.Where(b => b.id_mission == id_mission).Select(x => x.id_mission).Count();
                 if (int.Parse(cou.ToString()) - idmiss > 0 || int.Parse(cou.ToString()) == 0)
                 {
-                    key.AddRange(db.MISSIONs.Where(x => x.id_mission == id_mission).Select(s => new { t.name_mission, t.id_mission }).ToList());
+                    key.AddRange( from a in db.MISSIONs
+                    join b in db.TYPE_MISSIONs on a.id_type equals b.id_type
+                    join c in db.EMPLOYEEs on a.id_employee equals c.id_employee
+                    where a.id_mission == id_mission
+                    select new
+                    {
+                        a.id_mission,
+                        a.name_mission,
+                        a.Stardate,
+                        a.point,
+                        a.exprie,
+                        a.describe,
+                        b.name_type_mission,
+                        c.name_employee
+                    }); 
                 }
             }
-            return Ok(new { results = key, status = status, message = message });
+            return Ok(new { results = key, status = _status, message = _message });
         }
         [Route("Mission/Missionavaibleemp")]
         [HttpGet]
         public IHttpActionResult Missionavaibleemp([FromUri] string apiKey)
         {
-            var miss = new object();
+            List<object> miss = new List<object>();
             string _message = "";
             bool _status = true;
             if (apiKey != null)
             {
-                _message = "!";
+                _message = "Danh sách nhiệm vụ đang làm của 1 nhân viên";
                 _status = true;
                 var id = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.id_employee).SingleOrDefault();
-                foreach (var t in db.MISSION_PROCESSes)
+                foreach (var t in db.MISSION_PROCESSes.Where(x=>x.id_employee==id))
                 {
                     if (t.id_employee == id)
                     {
-                        miss = db.MISSIONs.Join(db.MISSION_PROCESSes.Where(x => x.status == 0 && x.id_employee==id), m => m.id_mission, mp => mp.id_mission, (m, mp) =>
-                              new {m.id_mission , m.name_mission, m.Stardate, m.point, m.exprie, m.describe, m.id_type,m.id_employee});
+                                miss.AddRange(from a in db.MISSIONs
+                                join b in db.TYPE_MISSIONs on a.id_type equals b.id_type
+                                join c in db.EMPLOYEEs on a.id_employee equals c.id_employee 
+                                where t.status == 0 && t.id_employee == id && a.id_mission== t.id_mission
+                                select new
+                                {
+                                    a.id_mission,
+                                    a.name_mission,
+                                    a.Stardate,
+                                    a.point,
+                                    a.exprie,
+                                    a.describe,
+                                    b.name_type_mission,
+                                    c.name_employee
+                                });
                     }
                 }
             }
