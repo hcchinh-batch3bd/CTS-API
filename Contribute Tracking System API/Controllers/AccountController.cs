@@ -22,18 +22,18 @@ namespace Contribute_Tracking_System_API.Controllers
         [HttpGet]
         public IHttpActionResult GetCheckLogin([FromUri] string id, [FromUri] string pw)
         {
-            string message = "Bad request";
-            bool status = false;
+            string _message = "Bad request";
+            bool _status = false;
             if (id!=null && pw!=null)
             {
-                message = "Đăng nhập thành công !!";
-                status = true;
+                _message = "Đăng nhập thành công !!";
+                _status = true;
                 var key = db.EMPLOYEEs.Where(x => x.id_employee == int.Parse(id) && x.password == CreateMD5Hash(pw)).Select(s => new { s.name_employee, s.point, s.apiKey });
                 if (!key.Any())
-                    message = "ID đăng nhập hoặc mật khẩu không hợp lê !!";
-                return Ok(new { results = key, status = status, message = message });
+                    _message = "ID đăng nhập hoặc mật khẩu không hợp lệ !!";
+                return Ok(new { results = key, status = _status, message = _message });
             }
-            else return Ok(new { results = "", status = status, message = message });
+            else return Ok(new { results = "", status = _status, message = _message });
         }
             
            
@@ -77,7 +77,7 @@ namespace Contribute_Tracking_System_API.Controllers
                     _message = " Đổi mật khẩu thành công";
                 }
             }
-            else _message = "Ban chua nhap day du thong tin";
+            else _message = "Bạn chưa nhập dầy đủ thông tin !!";
             return Ok(new { results = "", status = _status, message = _message });
         }
         //Load List Employee
