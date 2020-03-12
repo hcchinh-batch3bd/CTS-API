@@ -34,7 +34,7 @@ namespace Contribute_Tracking_System_API.Controllers
         }
 
 
-        // PUT: Type_Mission/5
+        // PUT:Type_Mission/5
         public void Put(int id, [FromBody]string value)
         {
         }
