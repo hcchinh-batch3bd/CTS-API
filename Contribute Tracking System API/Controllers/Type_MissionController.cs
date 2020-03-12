@@ -15,31 +15,31 @@ namespace Contribute_Tracking_System_API.Controllers
 
         [Route("Type_Mission")]
         [HttpGet]
-        // GET: api/Type_Mission
+        // GET: Type_mission
         public IEnumerable<TYPE_MISSION> Get()
         {
             return db.TYPE_MISSIONs.ToList<TYPE_MISSION>();
         }
 
-        // GET: api/Type_Mission/5
+        // GET: Type_Mission/5
         public string Get(int id)
         {
             return "value";
         }
 
-
-        // POST: /Type_Mission
+        
+       // POST: Type_mission
         public void Post([FromBody]string value)
         {
         }
 
 
-        // PUT: api/Type_Mission/5
+        // PUT: Type_Mission/5
         public void Put(int id, [FromBody]string value)
         {
         }
 
-        // DELETE: api/Type_Mission/5
+        // DELETE: Type_Mission/5
         public void Delete(int id)
         {
         }
