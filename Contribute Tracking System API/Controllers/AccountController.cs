@@ -90,37 +90,51 @@ namespace Contribute_Tracking_System_API.Controllers
             bool _status = true;
             if (apiKey != null)
             {
-                _message = "Danh sách nhân viên!!";
-                var checklevel = db.EMPLOYEEs.Where(x => x.status == true).Select(x => new { x.id_employee, x.level_employee });
-                foreach (var item in checklevel)
+                int checkApiKey = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.apiKey).Count();
+                if(checkApiKey != 0)
                 {
-                    if(item.level_employee == true)
+                    _message = "Danh sách nhân viên!!";
+                var checkLevel = db.EMPLOYEEs.Select(x => new { x.id_employee, x.level_employee, x.status });
+                foreach (var item in checkLevel)
+                {
+                    if(item.level_employee == true && item.status == true )
                     {
-                        key.AddRange(LoadData(item.id_employee, "Nhân Viên"));
+                        key.AddRange(LoadData(item.id_employee, "Quản lý", "Hoạt động"));
                     }
+                    else if (item.level_employee == true && item.status == false)
+                        {
+                        key.AddRange(LoadData(item.id_employee, "Quản lý", "Nghỉ việc"));
+                        }
+                    else if (item.level_employee == false && item.status == true)
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Nhân viên", "Hoạt động"));
+                        }
                     else
-                    {
-                        key.AddRange(LoadData(item.id_employee, "Quản Lý"));
-                    }
-                    if (!key.Any())
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Nhân viên", "Nghỉ việc"));
+                        } 
+                        if (!key.Any())
                     {
                         _message = "Không có danh sách";
                     }
+                }
                 }
                 return Ok(new { results = key, status = _status, message = _message });
             }
               
             else return Ok(new { results = "", status = _status, message = _message });
         }
-        private IEnumerable<object> LoadData(int id, string level)
+        private IEnumerable<object> LoadData(int id, string level, string status)
         {
-            return db.EMPLOYEEs.Where(x => x.status == true && x.id_employee == id).Select(x => new {
+            return db.EMPLOYEEs.Where(x=> x.id_employee == id).Select(x => new {
                 x.id_employee,
                 x.name_employee,
                 x.email,
                 x.date,
                 x.point,
-                level });
+                level,
+                status
+            });
         }
         // GetET: Account
         public IEnumerable<EMPLOYEE> Get()
