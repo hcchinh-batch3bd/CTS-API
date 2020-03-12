@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Web.Http.Cors;
 
+
 namespace Contribute_Tracking_System_API.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*", exposedHeaders: "X-My-Header")]
@@ -21,21 +22,67 @@ namespace Contribute_Tracking_System_API.Controllers
         [HttpGet]
         public IHttpActionResult GetCheckLogin([FromUri] string id, [FromUri] string pw)
         {
-            string message = "Bad request";
-            bool status = false;
+            string _message = "Bad request";
+            bool _status = false;
             if (id!=null && pw!=null)
             {
-                message = "Đăng nhập thành công !!";
-                status = true;
+                _message = "Đăng nhập thành công !!";
+                _status = true;
                 var key = db.EMPLOYEEs.Where(x => x.id_employee == int.Parse(id) && x.password == CreateMD5Hash(pw)).Select(s => new { s.name_employee, s.point, s.apiKey });
                 if (!key.Any())
-                    message = "ID đăng nhập hoặc mật khẩu không hợp lê !!";
-                return Ok(new { results = key, status = status, message = message });
+                    _message = "ID đăng nhập hoặc mật khẩu không hợp lệ !!";
+                return Ok(new { results = key, status = _status, message = _message });
             }
-            else return Ok(new { results = "", status = status, message = message });
+            else return Ok(new { results = "", status = _status, message = _message });
         }
-            
-           
+        //Hủy Mission
+        [Route("Mission/{id}/ClearMission")]
+        [HttpPut]
+        public IHttpActionResult ClearMission(int id, [FromUri] string apiKey)
+        {
+            if (id != null && apiKey != null)
+            {
+                var check = db.EMPLOYEEs.Where(s => s.apiKey == apiKey).Select(a => a.id_employee).SingleOrDefault();
+                if (check > 0)
+                {
+                    var level = db.EMPLOYEEs.Where(b => b.id_employee == check && b.level_employee == true).Select(b => b.id_employee).SingleOrDefault();
+                    if (level > 0)
+                    {
+                        var check2 = db.MISSIONs.Where(x => x.id_mission == id).Select(x => x.id_mission).SingleOrDefault();
+                        if (check2 > 0)
+                        {
+                            var clear = db.MISSIONs.Where(x => x.id_employee == level && x.id_mission == check2).ToList();
+                            clear.ForEach(x => { x.status = -1; });
+                            db.SubmitChanges();
+                            return Ok(new { message = "Tạm hủy thành công !" });
+                        }
+                        else
+                        {
+                            return Ok(new { message = "Không có id misson này!" });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new { message = "Bạn không đủ quyền hạn này" });
+                    }
+                }
+                else
+                {
+                    return Ok(new {  message = "Không có id employee này!" });
+
+                }
+            }
+            else
+            {
+                return Ok(new { message = "Bạn chưa nhập id mission hoặc apiKey!" });
+
+        }
+
+
+        }
+
+
+
         [Route("Account/OTP")]
         [HttpGet]
         public IHttpActionResult SendOTP([FromUri] string mail)
@@ -76,7 +123,7 @@ namespace Contribute_Tracking_System_API.Controllers
                     _message = " Đổi mật khẩu thành công";
                 }
             }
-            else _message = "Ban chua nhap day du thong tin";
+            else _message = "Bạn chưa nhập dầy đủ thông tin !!";
             return Ok(new { results = "", status = _status, message = _message });
         }
         //Load List Employee
@@ -120,12 +167,41 @@ namespace Contribute_Tracking_System_API.Controllers
                 }
                 return Ok(new { results = key, status = _status, message = _message });
             }
-
+                if(checkApiKey != 0)
+                {
+                    _message = "Danh sách nhân viên!!";
+                var checkLevel = db.EMPLOYEEs.Select(x => new { x.id_employee, x.level_employee, x.status });
+                foreach (var item in checkLevel)
+                {
+                    if(item.level_employee == true && item.status == true )
+                    {
+                        key.AddRange(LoadData(item.id_employee, "Quản lý", "Hoạt động"));
+                    }
+                    else if (item.level_employee == true && item.status == false)
+                        {
+                        key.AddRange(LoadData(item.id_employee, "Quản lý", "Nghỉ việc"));
+                        }
+                    else if (item.level_employee == false && item.status == true)
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Nhân viên", "Hoạt động"));
+                        }
+                    else
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Nhân viên", "Nghỉ việc"));
+                        } 
+                        if (!key.Any())
+                    {
+                        _message = "Không có danh sách";
+                    }
+                }
+                }
+                return Ok(new { results = key, status = _status, message = _message });
+            }
             else return Ok(new { results = "", status = _status, message = _message });
         }
         private IEnumerable<object> LoadData(int id, string level, string status)
         {
-            return db.EMPLOYEEs.Where(x => x.id_employee == id).Select(x => new {
+            return db.EMPLOYEEs.Where(x=> x.id_employee == id).Select(x => new {
                 x.id_employee,
                 x.name_employee,
                 x.email,

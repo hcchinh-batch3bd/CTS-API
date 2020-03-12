@@ -13,13 +13,7 @@
       <Column Name="apiKey" Type="System.String" DbType="VarChar(MAX) NOT NULL" CanBeNull="false" />
       <Association Name="EMPLOYEE_MISSION" Member="MISSIONs" ThisKey="id_employee" OtherKey="id_employee" Type="MISSION" />
       <Association Name="EMPLOYEE_MISSION_PROCESS" Member="MISSION_PROCESSes" ThisKey="id_employee" OtherKey="id_employee" Type="MISSION_PROCESS" />
-    </Type>
-  </Table>
-  <Table Name="dbo.TYPE_MISSION" Member="TYPE_MISSIONs">
-    <Type Name="TYPE_MISSION">
-      <Column Name="id_type" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="name_type_mission" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Association Name="TYPE_MISSION_MISSION" Member="MISSIONs" ThisKey="id_type" OtherKey="id_type" Type="MISSION" />
+      <Association Name="EMPLOYEE_TYPE_MISSION" Member="TYPE_MISSIONs" ThisKey="id_employee" OtherKey="id_employee" Type="TYPE_MISSION" />
     </Type>
   </Table>
   <Table Name="dbo.MISSION" Member="MISSIONs">
@@ -47,6 +41,17 @@
       <Column Name="date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
       <Association Name="EMPLOYEE_MISSION_PROCESS" Member="EMPLOYEE" ThisKey="id_employee" OtherKey="id_employee" Type="EMPLOYEE" IsForeignKey="true" />
       <Association Name="MISSION_MISSION_PROCESS" Member="MISSION" ThisKey="id_mission" OtherKey="id_mission" Type="MISSION" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.TYPE_MISSION" Member="TYPE_MISSIONs">
+    <Type Name="TYPE_MISSION">
+      <Column Name="id_type" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name_type_mission" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="status" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="id_employee" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="TYPE_MISSION_MISSION" Member="MISSIONs" ThisKey="id_type" OtherKey="id_type" Type="MISSION" />
+      <Association Name="EMPLOYEE_TYPE_MISSION" Member="EMPLOYEE" ThisKey="id_employee" OtherKey="id_employee" Type="EMPLOYEE" IsForeignKey="true" />
     </Type>
   </Table>
 </Database>

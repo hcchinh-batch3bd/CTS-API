@@ -33,12 +33,12 @@ namespace Contribute_Tracking_System_API
     partial void InsertEMPLOYEE(EMPLOYEE instance);
     partial void UpdateEMPLOYEE(EMPLOYEE instance);
     partial void DeleteEMPLOYEE(EMPLOYEE instance);
-    partial void InsertTYPE_MISSION(TYPE_MISSION instance);
-    partial void UpdateTYPE_MISSION(TYPE_MISSION instance);
-    partial void DeleteTYPE_MISSION(TYPE_MISSION instance);
     partial void InsertMISSION(MISSION instance);
     partial void UpdateMISSION(MISSION instance);
     partial void DeleteMISSION(MISSION instance);
+    partial void InsertTYPE_MISSION(TYPE_MISSION instance);
+    partial void UpdateTYPE_MISSION(TYPE_MISSION instance);
+    partial void DeleteTYPE_MISSION(TYPE_MISSION instance);
     #endregion
 		
 		public APIDataClassesDataContext() : 
@@ -79,14 +79,6 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		public System.Data.Linq.Table<TYPE_MISSION> TYPE_MISSIONs
-		{
-			get
-			{
-				return this.GetTable<TYPE_MISSION>();
-			}
-		}
-		
 		public System.Data.Linq.Table<MISSION> MISSIONs
 		{
 			get
@@ -100,6 +92,14 @@ namespace Contribute_Tracking_System_API
 			get
 			{
 				return this.GetTable<MISSION_PROCESS>();
+			}
+		}
+		
+		public System.Data.Linq.Table<TYPE_MISSION> TYPE_MISSIONs
+		{
+			get
+			{
+				return this.GetTable<TYPE_MISSION>();
 			}
 		}
 	}
@@ -130,6 +130,8 @@ namespace Contribute_Tracking_System_API
 		
 		private EntitySet<MISSION> _MISSIONs;
 		
+		private EntitySet<TYPE_MISSION> _TYPE_MISSIONs;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -157,6 +159,7 @@ namespace Contribute_Tracking_System_API
 		public EMPLOYEE()
 		{
 			this._MISSIONs = new EntitySet<MISSION>(new Action<MISSION>(this.attach_MISSIONs), new Action<MISSION>(this.detach_MISSIONs));
+			this._TYPE_MISSIONs = new EntitySet<TYPE_MISSION>(new Action<TYPE_MISSION>(this.attach_TYPE_MISSIONs), new Action<TYPE_MISSION>(this.detach_TYPE_MISSIONs));
 			OnCreated();
 		}
 		
@@ -353,6 +356,19 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_TYPE_MISSION", Storage="_TYPE_MISSIONs", ThisKey="id_employee", OtherKey="id_employee")]
+		public EntitySet<TYPE_MISSION> TYPE_MISSIONs
+		{
+			get
+			{
+				return this._TYPE_MISSIONs;
+			}
+			set
+			{
+				this._TYPE_MISSIONs.Assign(value);
+			}
+		}
+		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -384,119 +400,17 @@ namespace Contribute_Tracking_System_API
 			this.SendPropertyChanging();
 			entity.EMPLOYEE = null;
 		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.TYPE_MISSION")]
-	public partial class TYPE_MISSION : INotifyPropertyChanging, INotifyPropertyChanged
-	{
 		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _id_type;
-		
-		private string _name_type_mission;
-		
-		private EntitySet<MISSION> _MISSIONs;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void Onid_typeChanging(int value);
-    partial void Onid_typeChanged();
-    partial void Onname_type_missionChanging(string value);
-    partial void Onname_type_missionChanged();
-    #endregion
-		
-		public TYPE_MISSION()
-		{
-			this._MISSIONs = new EntitySet<MISSION>(new Action<MISSION>(this.attach_MISSIONs), new Action<MISSION>(this.detach_MISSIONs));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_type", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int id_type
-		{
-			get
-			{
-				return this._id_type;
-			}
-			set
-			{
-				if ((this._id_type != value))
-				{
-					this.Onid_typeChanging(value);
-					this.SendPropertyChanging();
-					this._id_type = value;
-					this.SendPropertyChanged("id_type");
-					this.Onid_typeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name_type_mission", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
-		public string name_type_mission
-		{
-			get
-			{
-				return this._name_type_mission;
-			}
-			set
-			{
-				if ((this._name_type_mission != value))
-				{
-					this.Onname_type_missionChanging(value);
-					this.SendPropertyChanging();
-					this._name_type_mission = value;
-					this.SendPropertyChanged("name_type_mission");
-					this.Onname_type_missionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TYPE_MISSION_MISSION", Storage="_MISSIONs", ThisKey="id_type", OtherKey="id_type")]
-		public EntitySet<MISSION> MISSIONs
-		{
-			get
-			{
-				return this._MISSIONs;
-			}
-			set
-			{
-				this._MISSIONs.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_MISSIONs(MISSION entity)
+		private void attach_TYPE_MISSIONs(TYPE_MISSION entity)
 		{
 			this.SendPropertyChanging();
-			entity.TYPE_MISSION = this;
+			entity.EMPLOYEE = this;
 		}
 		
-		private void detach_MISSIONs(MISSION entity)
+		private void detach_TYPE_MISSIONs(TYPE_MISSION entity)
 		{
 			this.SendPropertyChanging();
-			entity.TYPE_MISSION = null;
+			entity.EMPLOYEE = null;
 		}
 	}
 	
@@ -938,6 +852,233 @@ namespace Contribute_Tracking_System_API
 					this._date = value;
 				}
 			}
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.TYPE_MISSION")]
+	public partial class TYPE_MISSION : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _id_type;
+		
+		private string _name_type_mission;
+		
+		private bool _status;
+		
+		private System.Nullable<System.DateTime> _date;
+		
+		private System.Nullable<int> _id_employee;
+		
+		private EntitySet<MISSION> _MISSIONs;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onid_typeChanging(int value);
+    partial void Onid_typeChanged();
+    partial void Onname_type_missionChanging(string value);
+    partial void Onname_type_missionChanged();
+    partial void OnstatusChanging(bool value);
+    partial void OnstatusChanged();
+    partial void OndateChanging(System.Nullable<System.DateTime> value);
+    partial void OndateChanged();
+    partial void Onid_employeeChanging(System.Nullable<int> value);
+    partial void Onid_employeeChanged();
+    #endregion
+		
+		public TYPE_MISSION()
+		{
+			this._MISSIONs = new EntitySet<MISSION>(new Action<MISSION>(this.attach_MISSIONs), new Action<MISSION>(this.detach_MISSIONs));
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_type", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int id_type
+		{
+			get
+			{
+				return this._id_type;
+			}
+			set
+			{
+				if ((this._id_type != value))
+				{
+					this.Onid_typeChanging(value);
+					this.SendPropertyChanging();
+					this._id_type = value;
+					this.SendPropertyChanged("id_type");
+					this.Onid_typeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name_type_mission", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		public string name_type_mission
+		{
+			get
+			{
+				return this._name_type_mission;
+			}
+			set
+			{
+				if ((this._name_type_mission != value))
+				{
+					this.Onname_type_missionChanging(value);
+					this.SendPropertyChanging();
+					this._name_type_mission = value;
+					this.SendPropertyChanged("name_type_mission");
+					this.Onname_type_missionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_status", DbType="Bit NOT NULL")]
+		public bool status
+		{
+			get
+			{
+				return this._status;
+			}
+			set
+			{
+				if ((this._status != value))
+				{
+					this.OnstatusChanging(value);
+					this.SendPropertyChanging();
+					this._status = value;
+					this.SendPropertyChanged("status");
+					this.OnstatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date")]
+		public System.Nullable<System.DateTime> date
+		{
+			get
+			{
+				return this._date;
+			}
+			set
+			{
+				if ((this._date != value))
+				{
+					this.OndateChanging(value);
+					this.SendPropertyChanging();
+					this._date = value;
+					this.SendPropertyChanged("date");
+					this.OndateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_employee", DbType="Int")]
+		public System.Nullable<int> id_employee
+		{
+			get
+			{
+				return this._id_employee;
+			}
+			set
+			{
+				if ((this._id_employee != value))
+				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Onid_employeeChanging(value);
+					this.SendPropertyChanging();
+					this._id_employee = value;
+					this.SendPropertyChanged("id_employee");
+					this.Onid_employeeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="TYPE_MISSION_MISSION", Storage="_MISSIONs", ThisKey="id_type", OtherKey="id_type")]
+		public EntitySet<MISSION> MISSIONs
+		{
+			get
+			{
+				return this._MISSIONs;
+			}
+			set
+			{
+				this._MISSIONs.Assign(value);
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_TYPE_MISSION", Storage="_EMPLOYEE", ThisKey="id_employee", OtherKey="id_employee", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.TYPE_MISSIONs.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.TYPE_MISSIONs.Add(this);
+						this._id_employee = value.id_employee;
+					}
+					else
+					{
+						this._id_employee = default(Nullable<int>);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_MISSIONs(MISSION entity)
+		{
+			this.SendPropertyChanging();
+			entity.TYPE_MISSION = this;
+		}
+		
+		private void detach_MISSIONs(MISSION entity)
+		{
+			this.SendPropertyChanging();
+			entity.TYPE_MISSION = null;
 		}
 	}
 }
