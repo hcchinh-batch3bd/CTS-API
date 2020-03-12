@@ -40,16 +40,16 @@ namespace Contribute_Tracking_System_API.Controllers
                 {
                     db.TYPE_MISSIONs.InsertOnSubmit(type_mission);
                     db.SubmitChanges();
-                    return Ok(new { message = "Thêm loại thành công!" });
+                    return Ok(new { message = "Thêm loại nhiệm vụ thành công!" });
                 }
                 else
                 {
-                    return Ok(new { message = "Thêm loại không thành công!" });
+                    return Ok(new { message = "Thêm loại nhiệm vụ không thành công!" });
                 }
             }
             else
             { 
-                return Ok(new { message = "Loại nhiệm vụ không tồn tại!" });
+                return Ok(new { message = "Vui lòng nhập loại nhiệm vụ!" });
             }
 
         }
