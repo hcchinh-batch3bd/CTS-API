@@ -109,10 +109,7 @@
     <Compile Include="App_Start\WebApiConfig2.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\MissionController.cs" />
-<<<<<<< HEAD
-=======
     <Compile Include="Controllers\Type_MissionController.cs" />
->>>>>>> master
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

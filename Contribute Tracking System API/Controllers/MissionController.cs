@@ -4,26 +4,19 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-<<<<<<< HEAD
 using System.Data.Entity;
 using System.Text;
 using System.Security.Cryptography;
 using System.Net.Mail;
-=======
->>>>>>> master
+
 using System.Web.Http.Cors;
 
 namespace Contribute_Tracking_System_API.Controllers
 {
-<<<<<<< HEAD
-=======
-
->>>>>>> master
     [EnableCors(origins: "*", headers: "*", methods: "*", exposedHeaders: "X-My-Header")]
     public class MissionController : ApiController
     {
         private APIDataClassesDataContext db = new APIDataClassesDataContext();
-<<<<<<< HEAD
         [Route("Missison/Missionavaible")]
         [HttpGet]
         public IHttpActionResult Missonavaible()
@@ -68,7 +61,6 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Bạn chưa nhập apiKey";
             return Ok(new { results = miss, status = _status, message = _message });
         }
-=======
         [Route("Mission/ListMission")]
         [HttpGet]
         public IHttpActionResult GetListMission()
@@ -147,8 +139,6 @@ namespace Contribute_Tracking_System_API.Controllers
                       };
             }
         }
-
->>>>>>> master
         // GET: api/Mission
         public IEnumerable<string> Get()
         {
