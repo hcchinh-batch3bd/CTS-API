@@ -29,10 +29,29 @@ namespace Contribute_Tracking_System_API.Controllers
             return "value";
         }
 
-        
-       // POST: Type_mission
-        public void Post([FromBody]string value)
+        [Route("Type_Mission")]
+        [HttpPost]
+        // POST: Type_Mission/apiKey
+        public IHttpActionResult Post([FromBody] TYPE_MISSION type_mission, [FromUri]string apiKey)
         {
+            if(type_mission != null)
+            {
+                var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Count();
+                if (check > 0)
+                {
+                    db.TYPE_MISSIONs.InsertOnSubmit(type_mission);
+                    db.SubmitChanges();
+                    return Ok(new { message = "Thêm loại nhiệm vụ thành công!" });
+                }
+                else
+                {
+                    return Ok(new { message = "Thêm loại nhiệm vụ không thành công!" });
+                }
+            }
+            else
+            {
+                return Ok(new { message = "Vui lòng nhập loại nhiệm vụ" });
+            }
         }
 
 
