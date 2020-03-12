@@ -16,9 +16,11 @@ namespace Contribute_Tracking_System_API.Controllers
         [Route("Type_Mission")]
         [HttpGet]
         // GET: Type_mission
-        public IEnumerable<TYPE_MISSION> Get()
+        public IEnumerable<object> Get()
         {
-            return db.TYPE_MISSIONs.ToList<TYPE_MISSION>();
+            return db.TYPE_MISSIONs.Where(x=>x.status == true).Select(x=> new {
+                x.id_type, x.name_type_mission, x.status, x.date, x.id_employee
+            });
         }
 
         // GET: Type_Mission/5
