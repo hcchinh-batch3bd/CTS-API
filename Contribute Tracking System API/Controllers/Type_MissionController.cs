@@ -13,26 +13,43 @@ namespace Contribute_Tracking_System_API.Controllers
     {
         private APIDataClassesDataContext db = new APIDataClassesDataContext();
 
-        [Route("Type_Mission")]
+        [Route("Type_Mission/GetAll")]
         [HttpGet]
-        // GET: Type_mission
-        public IEnumerable<object> Get()
+        // GET: Type_mission Lấy tất cả loại nhiệm vụ
+        public IEnumerable<object> GetAll()
         {
-            return db.TYPE_MISSIONs.Where(x=>x.status == true).Select(x=> new {
-                x.id_type, x.name_type_mission, x.status, x.date, x.id_employee
+            return db.TYPE_MISSIONs.Select(x => new {
+                x.id_type,
+                x.name_type_mission
             });
         }
 
-        // GET: Type_Mission/5
-        public string Get(int id)
+        [Route("Type_Mission")]
+        [HttpGet]
+        // GET: Type_mission Lấy tất cả loại nhiệm vụ status = true
+        public IEnumerable<object> Get()
         {
-            return "value";
+            return db.TYPE_MISSIONs.Where(x=>x.status == true).Select(x=> new {
+                x.id_type, x.name_type_mission
+            });
         }
 
-        [Route("Type_Mission")]
+        [Route("Type_Mission/{id}")]
+        [HttpGet]
+        // GET: Type_mission?id=8 Lấy tất cả loại nhiệm vụ theo id
+        public IEnumerable<object> Get(int id)
+        {
+            return db.TYPE_MISSIONs.Where(x => x.status == true && x.id_type == id).Select(x => new {
+                x.id_type,
+                x.name_type_mission
+            });
+        }
+
+
+        [Route("Type_Mission/{apiKey}")]
         [HttpPost]
-        // POST: Type_Mission/apiKey
-        public IHttpActionResult Post([FromBody] TYPE_MISSION type_mission, [FromUri]string apiKey)
+        // POST: Type_Mission/apiKey Thêm loại nhiệm vụ
+        public IHttpActionResult Post([FromBody] TYPE_MISSION type_mission, string apiKey)
         {
             if(type_mission != null)
             {
@@ -54,10 +71,10 @@ namespace Contribute_Tracking_System_API.Controllers
             }
         }
 
-        [Route("Type_Mission")]
+        [Route("Type_Mission/{apiKey}")]
         [HttpPut]
-        // PUT: /Type_Mission?apiKey
-        public IHttpActionResult Put([FromBody]TYPE_MISSION type_mission, [FromUri]string apiKey)
+        // PUT: /Type_Mission?apiKey  Sửa loại nhiệm vụ
+        public IHttpActionResult Put([FromBody]TYPE_MISSION type_mission, string apiKey)
         {
             if (type_mission != null)
             {
@@ -86,10 +103,23 @@ namespace Contribute_Tracking_System_API.Controllers
             }
         }
 
-        // PUT:Type_Mission/5
-        public void Put([FromUri]int id, [FromUri]string apiKey)
+        [Route("Type_Mission/{id}/{apiKey}")]
+        [HttpPut]
+        // PUT:Type_Mission/id/apiKey  Xóa loại nhiệm vụ theo id
+        public IHttpActionResult Put(int id, string apiKey)
         {
-
+            var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Count();
+            if (check > 0)
+            {
+                var result = db.TYPE_MISSIONs.Where(x => x.id_type == id).ToList();
+                result.ForEach(x => { x.status = false; });
+                db.SubmitChanges();
+                return Ok(new { message = "Xóa loại nhiệm vụ thành công!" });
+            }
+            else
+            {
+                return Ok(new { message = "Xóa loại nhiệm vụ không thành công!"});
+            }
         }
 
         // DELETE: Type_Mission/5
