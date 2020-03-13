@@ -89,7 +89,10 @@ namespace Contribute_Tracking_System_API.Controllers
                 if (check > 0)
                 {
                     var complete = db.MISSION_PROCESSes.Where(x => x.id_employee == check && x.id_mission == id).Select(x => x).SingleOrDefault();
-                    complete.status = 0;
+                    complete.status = 1;
+                    var pointmission = db.MISSIONs.Where(a => a.id_mission == id).Select(a => a.point).SingleOrDefault();
+                    var check2 = db.EMPLOYEEs.Where(s => s.id_employee== check).Select(x => x).SingleOrDefault();
+                    check2.point = check2.point + pointmission;
                     db.SubmitChanges();
                     return Ok(new { message = "Xác nhận nhiệm vụ thành công!" });
                 }
@@ -295,6 +298,7 @@ namespace Contribute_Tracking_System_API.Controllers
                       };
             }
         }
+       
         // GET: api/Mission
         public IEnumerable<string> Get()
         {
