@@ -4,7 +4,7 @@
     "title": "CTS APIs",
     "version": "1.0"
   },
-  "host": "localhost:1037",
+  "host": "api.hotrogame.online",
   "schemes": [
     "http"
   ],
@@ -93,7 +93,7 @@
     },
     "/Account/Changepassword": {
       "put": {
-        "summary": "Change password not forget password",
+        "summary": "Change password",
         "operationId": "put-Account-Changepassword",
         "responses": {
           "200": {
@@ -108,20 +108,13 @@
             }
           }
         },
-        "description": "Change password not forget password",
+        "description": "Change password",
         "parameters": [
           {
             "type": "string",
             "in": "query",
             "name": "passnew",
             "description": "input password new",
-            "required": true
-          },
-          {
-            "type": "string",
-            "in": "query",
-            "name": "passold",
-            "description": "input password",
             "required": true
           },
           {

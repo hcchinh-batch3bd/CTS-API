@@ -21,3 +21,138 @@ Is there a limit to the number of requests an user can send? No limit
 }
 ```
 >Send OTP to Email 
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Account/OTP?mail="
+}
+```
+> Change password
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Account/Changepassword?passnew=&apiKey="
+}
+```
+> Delete Employee
+```json http
+{
+  "method": "put",
+  "url": "http://localhost:1037/Account/id/DeleteEmployee",
+  "query": {
+    "apiKey": ""
+  }
+}
+```
+> Get list rank employee
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Account/RankEmployee",
+  "query": {}
+}
+```
+> Remove mission with ID
+```json http
+{
+  "method": "put",
+  "url": "http://localhost:1037/Mission/id/ClearMission",
+  "query": {
+    "apiKey": ""
+  }
+}
+```
+> Get list mission complete of account
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Mission/ListMissionComplete",
+  "query": {
+    "apiKey": ""
+  }
+}
+```
+> Get information of Mission with ID
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Mission/id/Describe",
+  "query": {}
+}
+```
+> Create a Mission
+```json http
+{
+  "method": "post",
+  "url": "http://localhost:1037/Mission/Create",
+  "query": {
+    "apiKey": ""
+  },
+  "body": "{\n  \"id_mission\": 0,\n  \"name_mission\": \"string\",\n  \"Stardate\": \"string\",\n  \"point\": 0,\n  \"exprie\": 0,\n  \"describe\": \"string\",\n  \"status\": true,\n  \"count\": 0,\n  \"id_type\": 0,\n  \"id_employee\": \"string\"\n}"
+}
+```
+> Comfirm complete mission of employee
+```json http
+{
+  "method": "put",
+  "url": "http://localhost:1037/Mission/id/CompleteMission",
+  "query": {
+    "apiKey": ""
+  }
+}
+```
+> Confim Mission of Admin
+```json http
+{
+  "method": "put",
+  "url": "http://localhost:1037/Mission/id/Confim",
+  "query": {
+    "apiKey": ""
+  }
+}
+```
+> Get list mission avaliable with keyword
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Mission/Search",
+  "query": {
+    "apiKey": ""
+  }
+}
+```
+Get list mission avaible
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Missison/Missionavaible",
+  "query": {
+    "apiKey": ""
+  }
+}
+```
+> Get list mission process of employee
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Mission/Missionavaibleemp",
+  "query": {
+    "apiKey": ""
+  }
+}
+```
+> Get list all mission of system
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Mission/ListMission"
+}
+```
+> Get list type mission
+```json http
+{
+  "method": "get",
+  "url": "http://localhost:1037/Type_Mission/GetAll"
+}
+```
+
