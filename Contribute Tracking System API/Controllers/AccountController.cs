@@ -24,7 +24,7 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             string _message = "Bad request";
             bool _status = false;
-            if (id!=null && pw!=null)
+            if (id != null && pw != null)
             {
                 _message = "Đăng nhập thành công !!";
                 _status = true;
@@ -68,7 +68,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 }
                 else
                 {
-                    return Ok(new {  message = "Không có id employee này!" });
+                    return Ok(new { message = "Không có id employee này!" });
 
                 }
             }
@@ -76,20 +76,18 @@ namespace Contribute_Tracking_System_API.Controllers
             {
                 return Ok(new { message = "Bạn chưa nhập id mission hoặc apiKey!" });
 
-        }
+            }
 
 
         }
-
-
-
+        //Gửi OTP
         [Route("Account/OTP")]
         [HttpGet]
         public IHttpActionResult SendOTP([FromUri] string mail)
         {
             string _message = "Bad request";
             bool _status = false;
-            if (mail!=null)
+            if (mail != null)
             {
                 _status = true;
                 Random rnd = new Random();
@@ -105,6 +103,7 @@ namespace Contribute_Tracking_System_API.Controllers
             return Ok(new { results = "", status = _status, message = _message });
 
         }
+        //Đổi mật khẩu
         [Route("Account/Changepassword")]
         [HttpPut]
         public IHttpActionResult ChangePassword([FromUri] string passnew, [FromUri] string passold, [FromUri] string apiKey)
@@ -126,6 +125,54 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Bạn chưa nhập dầy đủ thông tin !!";
             return Ok(new { results = "", status = _status, message = _message });
         }
+        //API xóa một nhân viên
+        [Route("Account/{id}/DeleteEmployee")]
+        [HttpPut]
+        public IHttpActionResult DeleteEmployee(int id, [FromUri] string apiKey)
+        {
+            string _message = "Bad request";
+            if (apiKey != null && id != null)
+            {
+                bool CheckApi = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.level_employee).FirstOrDefault();
+                if (CheckApi)
+                {
+                    bool changeStatus = false;
+                    int checkID = db.EMPLOYEEs.Where(x => x.id_employee == id).Count();
+                    if (checkID > 0)
+                    {
+                        EMPLOYEE employee = db.EMPLOYEEs.Where(x => x.id_employee == id).SingleOrDefault();
+                        if (employee.status == true)
+                        {
+                            employee.status = changeStatus;
+                            db.SubmitChanges();
+                            _message = "Xóa thành công";
+                        }
+                    }
+                }
+                else _message = "Không có quyền xóa";
+            }
+            return Ok(new { results = "", message = _message });
+        }
+        //API xếp hạng nhân viên theo điểm
+        [Route("Account/RankEmployee")]
+        [HttpGet]
+        public IHttpActionResult RankEmployee([FromUri] string apiKey)
+        {
+            object key = new object();
+            bool _status = true;
+            string _message = "Bad request";
+            if (apiKey != null)
+            {
+                int CheckApi = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.apiKey).Count();
+                if (CheckApi > 0)
+                {
+                    key = db.EMPLOYEEs.Where(x => x.status == true).OrderByDescending(x => x.point).Select(x => new { x.id_employee, x.name_employee, x.point });
+                    _message = "Bảng xếp hạng nhân viên";
+                }
+                return Ok(new { results = key, status = _status, message = _message });
+            }
+            return Ok(new { results = "", status = _status, message = _message });
+        }
         //Load List Employee
         [Route("Account/ListEmployee")]
         [HttpGet]
@@ -137,42 +184,43 @@ namespace Contribute_Tracking_System_API.Controllers
             if (apiKey != null)
             {
                 int checkApiKey = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.apiKey).Count();
-                if(checkApiKey != 0)
+                if (checkApiKey != 0)
                 {
                     _message = "Danh sách nhân viên!!";
-                var checkLevel = db.EMPLOYEEs.Select(x => new { x.id_employee, x.level_employee, x.status });
-                foreach (var item in checkLevel)
-                {
-                    if(item.level_employee == true && item.status == true )
+                    var checkLevel = db.EMPLOYEEs.Select(x => new { x.id_employee, x.level_employee, x.status });
+                    foreach (var item in checkLevel)
                     {
-                        key.AddRange(LoadData(item.id_employee, "Quản lý", "Hoạt động"));
-                    }
-                    else if (item.level_employee == true && item.status == false)
+                        if (item.level_employee == true && item.status == true)
                         {
-                        key.AddRange(LoadData(item.id_employee, "Quản lý", "Nghỉ việc"));
+                            key.AddRange(LoadData(item.id_employee, "Quản lý", "Hoạt động"));
                         }
-                    else if (item.level_employee == false && item.status == true)
+                        else if (item.level_employee == true && item.status == false)
+                        {
+                            key.AddRange(LoadData(item.id_employee, "Quản lý", "Nghỉ việc"));
+                        }
+                        else if (item.level_employee == false && item.status == true)
                         {
                             key.AddRange(LoadData(item.id_employee, "Nhân viên", "Hoạt động"));
                         }
-                    else
+                        else
                         {
                             key.AddRange(LoadData(item.id_employee, "Nhân viên", "Nghỉ việc"));
-                        } 
+                        }
                         if (!key.Any())
-                    {
-                        _message = "Không có danh sách";
+                        {
+                            _message = "Không có danh sách";
+                        }
                     }
-                }
                 }
                 return Ok(new { results = key, status = _status, message = _message });
             }
-              
+
             else return Ok(new { results = "", status = _status, message = _message });
         }
+        //Load Data
         private IEnumerable<object> LoadData(int id, string level, string status)
         {
-            return db.EMPLOYEEs.Where(x=> x.id_employee == id).Select(x => new {
+            return db.EMPLOYEEs.Where(x => x.id_employee == id).Select(x => new {
                 x.id_employee,
                 x.name_employee,
                 x.email,
@@ -182,31 +230,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 status
             });
         }
-        // GetET: Account
-        public IEnumerable<EMPLOYEE> Get()
-        {
-            return db.EMPLOYEEs.ToList<EMPLOYEE>();
-        }
-        // GET: Account/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: Account
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT: Account/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: Account/5
-        public void Delete(int id)
-        {
-        }
+        //Create MD5 hash
         public string CreateMD5Hash(string input)
         {
             // Step 1, calculate MD5 hash from input
@@ -222,6 +246,7 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             return sb.ToString();
         }
+        //Client sent mail OTP
         public bool SendOTP(string from, string to, string subject, string body)
         {
             bool f = false;
@@ -239,7 +264,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 client.Host = "smtp.office365.com";
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.EnableSsl = true;
-                
+
                 client.Send(mailMessage);
                 f = true;
             }
