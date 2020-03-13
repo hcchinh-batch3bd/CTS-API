@@ -17,6 +17,51 @@ namespace Contribute_Tracking_System_API.Controllers
     public class MissionController : ApiController
     {
         private APIDataClassesDataContext db = new APIDataClassesDataContext();
+        //Hủy Mission
+        [Route("Mission/{id}/ClearMission")]
+        [HttpPut]
+        public IHttpActionResult ClearMission(int id, [FromUri] string apiKey)
+        {
+            if (apiKey != null)
+            {
+                var check = db.EMPLOYEEs.Where(s => s.apiKey == apiKey).Select(a => a.id_employee).SingleOrDefault();
+                if (check > 0)
+                {
+                    var level = db.EMPLOYEEs.Where(b => b.id_employee == check && b.level_employee == true).Select(b => b.id_employee).SingleOrDefault();
+                    if (level > 0)
+                    {
+                        var check2 = db.MISSIONs.Where(x => x.id_mission == id).Select(x => x.id_mission).SingleOrDefault();
+                        if (check2 > 0)
+                        {
+                            var clear = db.MISSIONs.Where(x => x.id_employee == level && x.id_mission == check2).ToList();
+                            clear.ForEach(x => { x.status = -1; });
+                            db.SubmitChanges();
+                            return Ok(new { message = "Tạm hủy thành công !" });
+                        }
+                        else
+                        {
+                            return Ok(new { message = "Không có id misson này!" });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new { message = "Bạn không đủ quyền hạn này" });
+                    }
+                }
+                else
+                {
+                    return Ok(new { message = "Không có id employee này!" });
+
+                }
+            }
+            else
+            {
+                return Ok(new { message = "Bad request" });
+
+            }
+
+
+        }
         //Get List Mission
         [Route("Mission/ListMissionComplete")]
         [HttpGet]
@@ -58,11 +103,11 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { results = key, status = status, message = message });
             }
             else
-                return Ok(new { results = "", status = "Flase", message = "Not Found apiKey" });
+                return Ok(new { results = "", status = "false", message = "Not Found apiKey" });
 
         }
-        //Post Mission
-        [Route("Mission/Post")]
+        //Create Mission
+        [Route("Mission/Create")]
         [HttpPost]
         public IHttpActionResult PostMission(MISSION mission, [FromUri] string apiKey)
         {
@@ -149,6 +194,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { results = "", status = "false", message = "Not Found apiKey" });
 
         }
+        //Get list mission avaible
         [Route("Missison/Missionavaible")]
         [HttpGet]
         public IHttpActionResult Missonavaible()
@@ -185,6 +231,7 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             return Ok(new { results = key, status = _status, message = _message });
         }
+        //Get list mission process of employee
         [Route("Mission/Missionavaibleemp")]
         [HttpGet]
         public IHttpActionResult Missionavaibleemp([FromUri] string apiKey)
@@ -222,6 +269,7 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Bạn chưa nhập apiKey";
             return Ok(new { results = miss, status = _status, message = _message });
         }
+        //Get list mission
         [Route("Mission/ListMission")]
         [HttpGet]
         public IHttpActionResult GetListMission()
@@ -299,33 +347,6 @@ namespace Contribute_Tracking_System_API.Controllers
                           c.name_employee
                       };
             }
-        }
-       
-        // GET: api/Mission
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET: api/Mission/5
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/Mission
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT: api/Mission/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE: api/Mission/5
-        public void Delete(int id)
-        {
         }
     }
 }
