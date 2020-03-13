@@ -28,9 +28,11 @@ namespace Contribute_Tracking_System_API.Controllers
             foreach (var t in db.MISSIONs)
             {
                 var id_mission = t.id_mission;
+                var starday = t.Stardate;
+                DateTime finish = starday.AddDays(t.exprie);
                 var cou = db.MISSIONs.Where(a => a.id_mission == id_mission).Select(x => x.Count).FirstOrDefault();
                 var idmiss = db.MISSION_PROCESSes.Where(b => b.id_mission == id_mission).Select(x => x.id_mission).Count();
-                if (int.Parse(cou.ToString()) - idmiss > 0 || int.Parse(cou.ToString()) == 0)
+                if ((int.Parse(cou.ToString()) - idmiss > 0 || int.Parse(cou.ToString()) == 0) && finish>=DateTime.Now)
                 {
                     key.AddRange( from a in db.MISSIONs
                     join b in db.TYPE_MISSIONs on a.id_type equals b.id_type
