@@ -35,61 +35,14 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             else return Ok(new { results = "", status = _status, message = _message });
         }
-        //Hủy Mission
-        [Route("Mission/{id}/ClearMission")]
-        [HttpPut]
-        public IHttpActionResult ClearMission(int id, [FromUri] string apiKey)
-        {
-            if (id != null && apiKey != null)
-            {
-                var check = db.EMPLOYEEs.Where(s => s.apiKey == apiKey).Select(a => a.id_employee).SingleOrDefault();
-                if (check > 0)
-                {
-                    var level = db.EMPLOYEEs.Where(b => b.id_employee == check && b.level_employee == true).Select(b => b.id_employee).SingleOrDefault();
-                    if (level > 0)
-                    {
-                        var check2 = db.MISSIONs.Where(x => x.id_mission == id).Select(x => x.id_mission).SingleOrDefault();
-                        if (check2 > 0)
-                        {
-                            var clear = db.MISSIONs.Where(x => x.id_employee == level && x.id_mission == check2).ToList();
-                            clear.ForEach(x => { x.status = -1; });
-                            db.SubmitChanges();
-                            return Ok(new { message = "Tạm hủy thành công !" });
-                        }
-                        else
-                        {
-                            return Ok(new { message = "Không có id misson này!" });
-                        }
-                    }
-                    else
-                    {
-                        return Ok(new { message = "Bạn không đủ quyền hạn này" });
-                    }
-                }
-                else
-                {
-                    return Ok(new { message = "Không có id employee này!" });
-
-                }
-            }
-            else
-            {
-                return Ok(new { message = "Bạn chưa nhập id mission hoặc apiKey!" });
-
-            }
-
-
-        }
         //Gửi OTP
         [Route("Account/OTP")]
         [HttpGet]
         public IHttpActionResult SendOTP([FromUri] string mail)
         {
             string _message = "Bad request";
-            bool _status = false;
             if (mail != null)
             {
-                _status = true;
                 Random rnd = new Random();
                 int otp = rnd.Next(000000, 999999);
                 string msg = "OTP để xác nhận lấy lại mật khẩu của bạn : " + otp;
@@ -100,7 +53,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 }
                 else { _message = "Gửi OTP thất bại, thử lại sau !! !!"; }
             }
-            return Ok(new { results = "", status = _status, message = _message });
+            return Ok(new {message = _message });
 
         }
         //Đổi mật khẩu
@@ -109,21 +62,19 @@ namespace Contribute_Tracking_System_API.Controllers
         public IHttpActionResult ChangePassword([FromUri] string passnew, [FromUri] string passold, [FromUri] string apiKey)
         {
             string _message = "";
-            bool _status = true;
             if (passnew != null && passold != null && apiKey != null)
             {
                 _message = "Mật khẩu cũ không đúng !!";
-                _status = true;
-                var changpass = db.EMPLOYEEs.Where(x => x.password == passold && x.apiKey == apiKey).Select(x => x).SingleOrDefault();
+                var changpass = db.EMPLOYEEs.Where(x => x.password == CreateMD5Hash(passold) && x.apiKey == apiKey).Select(x => x).SingleOrDefault();
                 if (changpass != null)
                 {
-                    changpass.password = passnew;
+                    changpass.password = CreateMD5Hash(passnew);
                     db.SubmitChanges();
                     _message = " Đổi mật khẩu thành công";
                 }
             }
             else _message = "Bạn chưa nhập dầy đủ thông tin !!";
-            return Ok(new { results = "", status = _status, message = _message });
+            return Ok(new {message = _message });
         }
         //API xóa một nhân viên
         [Route("Account/{id}/DeleteEmployee")]
@@ -131,7 +82,7 @@ namespace Contribute_Tracking_System_API.Controllers
         public IHttpActionResult DeleteEmployee(int id, [FromUri] string apiKey)
         {
             string _message = "Bad request";
-            if (apiKey != null && id != null)
+            if (apiKey != null)
             {
                 bool CheckApi = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.level_employee).FirstOrDefault();
                 if (CheckApi)
@@ -151,7 +102,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 }
                 else _message = "Không có quyền xóa";
             }
-            return Ok(new { results = "", message = _message });
+            return Ok(new {message = _message });
         }
         //API xếp hạng nhân viên theo điểm
         [Route("Account/RankEmployee")]

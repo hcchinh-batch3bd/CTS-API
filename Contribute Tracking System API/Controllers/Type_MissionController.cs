@@ -20,7 +20,10 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             return db.TYPE_MISSIONs.Select(x => new {
                 x.id_type,
-                x.name_type_mission
+                x.name_type_mission,
+                x.id_employee,
+                x.status,
+                x.date
             });
         }
 
@@ -53,8 +56,8 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             if(type_mission != null)
             {
-                var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Count();
-                if (check > 0)
+                var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x=>x.level_employee).FirstOrDefault();
+                if (check)
                 {
                     db.TYPE_MISSIONs.InsertOnSubmit(type_mission);
                     db.SubmitChanges();
@@ -62,7 +65,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 }
                 else
                 {
-                    return Ok(new { message = "Thêm loại nhiệm vụ không thành công!" });
+                    return Ok(new { message = "Không có quyền thêm!" });
                 }
             }
             else
@@ -78,28 +81,27 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             if (type_mission != null)
             {
-                var check = db.EMPLOYEEs.Where(x => x.apiKey.Equals(apiKey)).Count();
-                if (check > 0)
+                var check = db.EMPLOYEEs.Where(x => x.apiKey.Equals(apiKey)).Select(x=>x.level_employee).FirstOrDefault();
+                if (check)
                 {
+                   
                     var update = db.TYPE_MISSIONs.Where(x => x.id_type == type_mission.id_type).ToList();
                     update.ForEach(x =>
                     {
                         x.name_type_mission = type_mission.name_type_mission;
                         x.status = type_mission.status;
-                        x.id_employee = type_mission.id_employee;
-                        x.date = type_mission.date;
                     });
                     db.SubmitChanges();
                     return Ok(new { massage = "Sửa loại nhiệm vụ thành công!" });
                 }
                 else
                 {
-                    return Ok(new { massage = "Sửa loại nhiệm vụ không thành công!" });
+                    return Ok(new { massage = "Không có quyền sửa!" });
                 }
             }
             else
             {
-                return Ok(new { massage = "Vui lòng nhập thông tin!" });
+                return Ok(new {massage = "Vui lòng nhập thông tin!" });
             }
         }
 
@@ -108,8 +110,8 @@ namespace Contribute_Tracking_System_API.Controllers
         // PUT:Type_Mission/id/apiKey  Xóa loại nhiệm vụ theo id
         public IHttpActionResult Put(int id, string apiKey)
         {
-            var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Count();
-            if (check > 0)
+            var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x=>x.level_employee).FirstOrDefault();
+            if (check)
             {
                 var result = db.TYPE_MISSIONs.Where(x => x.id_type == id).ToList();
                 result.ForEach(x => { x.status = false; });
@@ -118,7 +120,7 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             else
             {
-                return Ok(new { message = "Xóa loại nhiệm vụ không thành công!"});
+                return Ok(new { message = "Không có quyền xóa!"});
             }
         }
 
