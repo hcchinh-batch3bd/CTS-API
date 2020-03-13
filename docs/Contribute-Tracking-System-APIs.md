@@ -17,28 +17,28 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Account/CheckLogin?id=&pw="
+  "url": "http://api.hotrogame.online/Account/CheckLogin?id=&pw="
 }
 ```
 >Send OTP to Email 
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Account/OTP?mail="
+  "url": "http://api.hotrogame.online/Account/OTP?mail="
 }
 ```
 > Change password
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Account/Changepassword?passnew=&apiKey="
+  "url": "http://api.hotrogame.online/Account/Changepassword?passnew=&apiKey="
 }
 ```
 > Delete Employee
 ```json http
 {
   "method": "put",
-  "url": "http://localhost:1037/Account/id/DeleteEmployee",
+  "url": "http://api.hotrogame.online/Account/id/DeleteEmployee",
   "query": {
     "apiKey": ""
   }
@@ -48,7 +48,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Account/RankEmployee",
+  "url": "http://api.hotrogame.online/Account/RankEmployee",
   "query": {}
 }
 ```
@@ -56,7 +56,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "put",
-  "url": "http://localhost:1037/Mission/id/ClearMission",
+  "url": "http://api.hotrogame.online/Mission/id/ClearMission",
   "query": {
     "apiKey": ""
   }
@@ -66,7 +66,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Mission/ListMissionComplete",
+  "url": "http://api.hotrogame.online/Mission/ListMissionComplete",
   "query": {
     "apiKey": ""
   }
@@ -76,7 +76,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Mission/id/Describe",
+  "url": "http://api.hotrogame.online/Mission/id/Describe",
   "query": {}
 }
 ```
@@ -84,7 +84,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "post",
-  "url": "http://localhost:1037/Mission/Create",
+  "url": "http://api.hotrogame.online/Mission/Create",
   "query": {
     "apiKey": ""
   },
@@ -95,7 +95,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "put",
-  "url": "http://localhost:1037/Mission/id/CompleteMission",
+  "url": "http://api.hotrogame.online/Mission/id/CompleteMission",
   "query": {
     "apiKey": ""
   }
@@ -105,7 +105,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "put",
-  "url": "http://localhost:1037/Mission/id/Confim",
+  "url": "http://api.hotrogame.online/Mission/id/Confim",
   "query": {
     "apiKey": ""
   }
@@ -115,7 +115,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Mission/Search",
+  "url": "http://api.hotrogame.online/Mission/Search",
   "query": {
     "apiKey": ""
   }
@@ -125,7 +125,7 @@ Get list mission avaible
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Missison/Missionavaible",
+  "url": "http://api.hotrogame.online/Missison/Missionavaible",
   "query": {
     "apiKey": ""
   }
@@ -135,7 +135,7 @@ Get list mission avaible
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Mission/Missionavaibleemp",
+  "url": "http://api.hotrogame.online/Mission/Missionavaibleemp",
   "query": {
     "apiKey": ""
   }
@@ -145,14 +145,14 @@ Get list mission avaible
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Mission/ListMission"
+  "url": "http://api.hotrogame.online/Mission/ListMission"
 }
 ```
 > Get list type mission
 ```json http
 {
   "method": "get",
-  "url": "http://localhost:1037/Type_Mission/GetAll"
+  "url": "http://api.hotrogame.online/Type_Mission/GetAll"
 }
 ```
 

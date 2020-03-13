@@ -2,11 +2,12 @@
   "swagger": "2.0",
   "info": {
     "title": "CTS APIs",
-    "version": "1.0"
+    "version": "1.0",
+    "description": ""
   },
   "host": "api.hotrogame.online",
   "schemes": [
-    "http"
+    "https"
   ],
   "produces": [
     "application/json"
@@ -732,5 +733,6 @@
         }
       }
     }
-  }
+  },
+  "securityDefinitions": {}
 }
