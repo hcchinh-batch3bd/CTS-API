@@ -167,7 +167,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 if ((int.Parse(cou.ToString()) - idmiss > 0 || int.Parse(cou.ToString()) == 0) && finish>=DateTime.Now)
                 {
                     key.AddRange( from a in db.MISSIONs
-                    join b in db.TYPE_MISSIONs on a.id_type equals b.id_type
+                    
                     join c in db.EMPLOYEEs on a.id_employee equals c.id_employee
                     where a.id_mission == id_mission
                     select new
@@ -178,7 +178,7 @@ namespace Contribute_Tracking_System_API.Controllers
                         a.point,
                         a.exprie,
                         a.describe,
-                        b.name_type_mission,
+                        a.id_type,
                         c.name_employee
                     }); 
                 }
@@ -201,8 +201,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 {
                     if (t.id_employee == id)
                     {
-                                miss.AddRange(from a in db.MISSIONs
-                                join b in db.TYPE_MISSIONs on a.id_type equals b.id_type
+                                miss.AddRange(from a in db.MISSIONs 
                                 join c in db.EMPLOYEEs on a.id_employee equals c.id_employee 
                                 where t.status == 0 && t.id_employee == id && a.id_mission== t.id_mission
                                 select new
@@ -213,7 +212,7 @@ namespace Contribute_Tracking_System_API.Controllers
                                     a.point,
                                     a.exprie,
                                     a.describe,
-                                    b.name_type_mission,
+                                    a.id_type,
                                     c.name_employee
                                 });
                     }
