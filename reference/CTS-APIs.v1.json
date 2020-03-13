@@ -37,7 +37,9 @@
                 }
               },
               "required": [
-                "results"
+                "results",
+                "status",
+                "message"
               ]
             }
           }
@@ -75,7 +77,10 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "message"
+              ]
             }
           }
         },
@@ -105,7 +110,10 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "message"
+              ]
             }
           }
         },
@@ -149,7 +157,10 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "message"
+              ]
             }
           }
         },
@@ -200,7 +211,12 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "results",
+                "status",
+                "message"
+              ]
             },
             "description": ""
           }
@@ -238,7 +254,10 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "message"
+              ]
             }
           }
         },
@@ -273,7 +292,11 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
             }
           }
         },
@@ -317,7 +340,11 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
             }
           }
         },
@@ -344,7 +371,10 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "message"
+              ]
             }
           }
         },
@@ -401,7 +431,10 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "message"
+              ]
             }
           }
         },
@@ -438,7 +471,10 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "message"
+              ]
             }
           }
         },
@@ -495,7 +531,12 @@
                 "messeage": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "results",
+                "status",
+                "messeage"
+              ]
             }
           }
         },
@@ -518,7 +559,7 @@
         ]
       }
     },
-    "/Missison/Missionavaible": {
+    "/Missison/Missionavailable": {
       "get": {
         "summary": "Get list mission avaible",
         "tags": [],
@@ -537,12 +578,17 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "results",
+                "status",
+                "message"
+              ]
             }
           }
         },
         "operationId": "get-Missison-Missionavaible",
-        "description": "Get list mission avaible",
+        "description": "Get list mission available",
         "parameters": [
           {
             "type": "string",
@@ -552,9 +598,10 @@
             "required": true
           }
         ]
-      }
+      },
+      "parameters": []
     },
-    "/Mission/Missionavaibleemp": {
+    "/Mission/Missionavailableemp": {
       "get": {
         "summary": "Get list mission process of employee",
         "tags": [],
@@ -573,7 +620,12 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "results",
+                "status",
+                "message"
+              ]
             }
           }
         },
@@ -588,7 +640,8 @@
             "required": true
           }
         ]
-      }
+      },
+      "parameters": []
     },
     "/Mission/ListMission": {
       "get": {
@@ -609,7 +662,11 @@
                 "message": {
                   "type": "string"
                 }
-              }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
             }
           }
         },
@@ -619,6 +676,160 @@
           {
             "type": "string",
             "in": "query"
+          }
+        ]
+      }
+    },
+    "/Type_Mission": {
+      "get": {
+        "summary": "Get list type mission available",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TypeMission"
+            }
+          }
+        },
+        "operationId": "get-Type_Mission",
+        "description": "Get list type mission available"
+      }
+    },
+    "/Type_Mission/{id}": {
+      "parameters": [
+        {
+          "type": "string",
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get information of type mission with ID",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TypeMission"
+            }
+          }
+        },
+        "operationId": "get-Type_Mission-id",
+        "description": "Get information of type mission with ID"
+      }
+    },
+    "/Type_Mission/Create": {
+      "post": {
+        "summary": "Creata a type mission",
+        "operationId": "post-Type_Mission-Create",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        },
+        "description": "Creata a type mission",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "apiKey",
+            "description": "apiKey access request",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/TypeMission"
+            },
+            "description": "Model Type mission"
+          }
+        ]
+      }
+    },
+    "/Type_Mission/Edit": {
+      "get": {
+        "summary": "Edit type mission",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        },
+        "operationId": "get-Type_Mission-Edit",
+        "description": "Edit type mission",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/TypeMission"
+            },
+            "description": "Model Type mission"
+          }
+        ]
+      }
+    },
+    "/Type_Mission/{id}/Remove": {
+      "parameters": [
+        {
+          "type": "string",
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "put": {
+        "summary": "Remove type mission with ID",
+        "operationId": "put-Type_Mission-id-Remove",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "message"
+              ]
+            }
+          }
+        },
+        "description": "Remove type mission with ID",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "apiKey",
+            "description": "apiKey access request",
+            "required": true
           }
         ]
       }

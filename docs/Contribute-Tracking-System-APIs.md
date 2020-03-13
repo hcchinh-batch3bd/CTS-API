@@ -4,7 +4,7 @@
 ![Ref a model](../assets/images/logo.png) 
 # Contribute-Tracking-System-APIs 
 ### **Introduction** 
-What does your API do? An SMS API. It does the following: - Create contact - Delete a contact - Send message - Get list of sent messages for a particular contact - Get list of received messages for a particular conatc - Delete a particular message 
+What does your API do? 
 ### **Overview** 
 Things that the developers should know about 
 ### **Authentication**
@@ -17,28 +17,28 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Account/CheckLogin?id=&pw="
+  "url": "https://api.hotrogame.online/Account/CheckLogin?id=&pw="
 }
 ```
 >Send OTP to Email 
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Account/OTP?mail="
+  "url": "https://api.hotrogame.online/Account/OTP?mail="
 }
 ```
 > Change password
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Account/Changepassword?passnew=&apiKey="
+  "url": "https://api.hotrogame.online/Account/Changepassword?passnew=&apiKey="
 }
 ```
 > Delete Employee
 ```json http
 {
   "method": "put",
-  "url": "http://api.hotrogame.online/Account/id/DeleteEmployee",
+  "url": "https://api.hotrogame.online/Account/id/DeleteEmployee",
   "query": {
     "apiKey": ""
   }
@@ -48,7 +48,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Account/RankEmployee",
+  "url": "https://api.hotrogame.online/Account/RankEmployee",
   "query": {}
 }
 ```
@@ -56,7 +56,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "put",
-  "url": "http://api.hotrogame.online/Mission/id/ClearMission",
+  "url": "https://api.hotrogame.online/Mission/id/ClearMission",
   "query": {
     "apiKey": ""
   }
@@ -66,7 +66,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Mission/ListMissionComplete",
+  "url": "https://api.hotrogame.online/Mission/ListMissionComplete",
   "query": {
     "apiKey": ""
   }
@@ -76,7 +76,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Mission/id/Describe",
+  "url": "https://api.hotrogame.online/Mission/id/Describe",
   "query": {}
 }
 ```
@@ -84,7 +84,7 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "post",
-  "url": "http://api.hotrogame.online/Mission/Create",
+  "url": "https://api.hotrogame.online/Mission/Create",
   "query": {
     "apiKey": ""
   },
@@ -95,37 +95,37 @@ Is there a limit to the number of requests an user can send? No limit
 ```json http
 {
   "method": "put",
-  "url": "http://api.hotrogame.online/Mission/id/CompleteMission",
+  "url": "https://api.hotrogame.online/Mission/id/CompleteMission",
   "query": {
     "apiKey": ""
   }
 }
 ```
-> Confim Mission of Admin
+> Confirm Mission of Admin
 ```json http
 {
   "method": "put",
-  "url": "http://api.hotrogame.online/Mission/id/Confim",
+  "url": "https://api.hotrogame.online/Mission/id/Confim",
   "query": {
     "apiKey": ""
   }
 }
 ```
-> Get list mission avaliable with keyword
+> Get list mission available with keyword
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Mission/Search",
+  "url": "https://api.hotrogame.online/Mission/Search",
   "query": {
     "apiKey": ""
   }
 }
 ```
-Get list mission avaible
+Get list mission availble
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Missison/Missionavaible",
+  "url": "https://api.hotrogame.online/Missison/Missionavailable",
   "query": {
     "apiKey": ""
   }
@@ -135,7 +135,7 @@ Get list mission avaible
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Mission/Missionavaibleemp",
+  "url": "https://api.hotrogame.online/Mission/Missionavailableemp",
   "query": {
     "apiKey": ""
   }
@@ -145,14 +145,15 @@ Get list mission avaible
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Mission/ListMission"
+  "url": "https://api.hotrogame.online/Mission/ListMission"
 }
 ```
 > Get list type mission
 ```json http
 {
   "method": "get",
-  "url": "http://api.hotrogame.online/Type_Mission/GetAll"
+  "url": "https://api.hotrogame.online/Type_Mission/GetAll"
 }
 ```
+
 
