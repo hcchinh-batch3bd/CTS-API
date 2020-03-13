@@ -182,6 +182,22 @@ namespace Contribute_Tracking_System_API.Controllers
                 status
             });
         }
+        [Route("Account/Information")]
+        [HttpGet]
+        public IHttpActionResult GetPoint([FromUri] string apiKey)
+        {
+            if (apiKey != null)
+            {
+                string mesage = "Thông tin nhân viên !";
+                bool status = true;
+                var infor = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(s => new { s.id_employee, s.name_employee, s.email, s.date, s.point, s.level_employee, s.status, s.apiKey });
+                if (!infor.Any())
+                    mesage = "Không có thông tin nhân viên này !";
+                return Ok(new { results = infor, status = status, mesage = mesage });
+            }
+            else
+                return Ok(new { results = "", status = "Flase", message = "Not Found apiKey" });
+        }
         // GetET: Account
         public IEnumerable<EMPLOYEE> Get()
         {

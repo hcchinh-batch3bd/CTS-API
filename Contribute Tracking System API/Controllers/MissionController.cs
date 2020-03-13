@@ -78,7 +78,30 @@ namespace Contribute_Tracking_System_API.Controllers
             else
                 return Ok(new { message = "Not Found apiKey" });
         }
+        //Complete Mission
+        [Route("Mission/{id}/CompleteMission")]
+        [HttpPut]
+        public IHttpActionResult CompleteMission(int id, [FromUri] string apiKey)
+        {
+            if (apiKey != null)
+            {
+                var check = db.EMPLOYEEs.Where(s => s.apiKey.Equals(apiKey)).Select(x => x.id_employee).SingleOrDefault();
+                if (check > 0)
+                {
+                    var complete = db.MISSION_PROCESSes.Where(x => x.id_employee == check && x.id_mission == id).Select(x => x).SingleOrDefault();
+                    complete.status = 0;
+                    db.SubmitChanges();
+                    return Ok(new { message = "Xác nhận nhiệm vụ thành công!" });
+                }
+                else
+                {
+                    return Ok(new { message = "Bạn không thể xác nhận nhiệm vụ của người khác!" });
+                }
+            }
+            else
+                return Ok(new { message = "Not Found apiKey" });
 
+        }
         //Confim Mission of Admin
         [Route("Mission/{id}/Confim")]
         [HttpPut]
