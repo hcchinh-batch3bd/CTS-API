@@ -88,6 +88,8 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { results = "", status = "false", message = "Not Found apiKey" });
 
         }
+        //Get list mission 
+
         //Get Describe Mission
         [Route("Mission/{id}/Describe")]
         [HttpGet]
@@ -268,84 +270,21 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Bạn chưa nhập apiKey";
             return Ok(new { results = miss, status = _status, message = _message });
         }
+       
         //Get list mission
         [Route("Mission/ListMission")]
         [HttpGet]
         public IHttpActionResult GetListMission()
         {
-
-            var key = new List<object>();
             string _message = "Danh sách nhiệm vụ !!";
             bool _status = true;
+            var key = db.MISSIONs.Select(x => new { x.id_mission, x.name_mission, x.Stardate, x.point, x.exprie, x.describe, x.status,  x.Count,  x.id_type, x.id_employee });
+            if(!key.Any())
             {
-                var checkstatus = db.MISSIONs.Select(x => new { id = x.id_mission, status = x.status });
-                foreach (var item in checkstatus)
-                {
-                    var checksoluong = db.MISSIONs.Where(x => x.id_mission == item.id).Select(x => x.Count).FirstOrDefault();
-                    int trangthai = Int32.Parse(item.status.ToString());
-                    switch (trangthai)
-                    {
-                        case -1:
-                            key.AddRange(LoadData(item.id, checksoluong, "Hủy"));
-                            break;
-                        case 0:
-                            key.AddRange(LoadData(item.id, checksoluong, "Đang duyệt"));
-                            break;
-                        case 1:
-                            key.AddRange(LoadData(item.id, checksoluong, "Đang chạy"));
-                            break;
-                        default:
-                            key.AddRange(LoadData(item.id, checksoluong, "Lỗi"));
-                            break;
-                    }
-                }
+                _message = "Không có danh sách nhiệm vụ";
             }
             return Ok(new { results = key, status = _status, message = _message });
 
-        }
-        //Thay đổi dữ liệu status , count khi = 0. 
-        private IEnumerable<object> LoadData(int id, int checksoluong, string status)
-        {
-            if (checksoluong == 0)
-            {
-                return  from a in db.MISSIONs
-                      join b in db.TYPE_MISSIONs on a.id_type equals b.id_type
-                      join c in db.EMPLOYEEs on a.id_employee equals c.id_employee
-                      where a.id_mission == id
-                      select new
-                      {
-                          a.id_mission,
-                          a.name_mission,
-                          a.Stardate,
-                          a.point,
-                          a.exprie,
-                          a.describe,
-                          status,
-                          count = "Không giới hạn",
-                          b.name_type_mission,
-                          c.name_employee
-                      };
-            }
-            else
-            {
-               return from a in db.MISSIONs
-                      where a.id_mission == id
-                      join b in db.TYPE_MISSIONs on a.id_type equals b.id_type
-                      join c in db.EMPLOYEEs on a.id_employee equals c.id_employee
-                      select new
-                      {
-                          a.id_mission,
-                          a.name_mission,
-                          a.Stardate,
-                          a.point,
-                          a.exprie,
-                          a.describe,
-                          status,
-                          count = a.Count,
-                          b.name_type_mission,
-                          c.name_employee
-                      };
-            }
         }
     }
 }
