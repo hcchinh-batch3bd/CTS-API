@@ -33,7 +33,11 @@ namespace Contribute_Tracking_System_API.Controllers
         public IEnumerable<object> Get()
         {
             return db.TYPE_MISSIONs.Where(x=>x.status == true).Select(x=> new {
-                x.id_type, x.name_type_mission
+                x.id_type,
+                x.name_type_mission,
+                x.id_employee,
+                x.status,
+                x.date
             });
         }
 
@@ -44,17 +48,20 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             return db.TYPE_MISSIONs.Where(x => x.status == true && x.id_type == id).Select(x => new {
                 x.id_type,
-                x.name_type_mission
+                x.name_type_mission,
+                x.id_employee,
+                x.status,
+                x.date
             });
         }
 
 
-        [Route("Type_Mission/{apiKey}")]
+        [Route("Type_Mission/Create")]
         [HttpPost]
         // POST: Type_Mission/apiKey Thêm loại nhiệm vụ
-        public IHttpActionResult Post([FromBody] TYPE_MISSION type_mission, string apiKey)
+        public IHttpActionResult Post([FromBody] TYPE_MISSION type_mission,[FromUri] string apiKey)
         {
-            if(type_mission != null)
+            if(type_mission != null && apiKey!=null)
             {
                 var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x=>x.level_employee).FirstOrDefault();
                 if (check)
@@ -74,7 +81,7 @@ namespace Contribute_Tracking_System_API.Controllers
             }
         }
 
-        [Route("Type_Mission/{apiKey}")]
+        [Route("Type_Mission/Edit")]
         [HttpPut]
         // PUT: /Type_Mission?apiKey  Sửa loại nhiệm vụ
         public IHttpActionResult Put([FromBody]TYPE_MISSION type_mission, string apiKey)
@@ -105,10 +112,10 @@ namespace Contribute_Tracking_System_API.Controllers
             }
         }
 
-        [Route("Type_Mission/{id}/{apiKey}")]
+        [Route("Type_Mission/{id}/Remove")]
         [HttpPut]
         // PUT:Type_Mission/id/apiKey  Xóa loại nhiệm vụ theo id
-        public IHttpActionResult Put(int id, string apiKey)
+        public IHttpActionResult Put(int id, [FromUri] string apiKey)
         {
             var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x=>x.level_employee).FirstOrDefault();
             if (check)

@@ -62,10 +62,10 @@ namespace Contribute_Tracking_System_API.Controllers
         public IHttpActionResult ChangePassword([FromUri] string passnew, [FromUri] string passold, [FromUri] string apiKey)
         {
             string _message = "";
-            if (passnew != null && passold != null && apiKey != null)
+            if (passnew != null && apiKey != null)
             {
-                _message = "Mật khẩu cũ không đúng !!";
-                var changpass = db.EMPLOYEEs.Where(x => x.password == CreateMD5Hash(passold) && x.apiKey == apiKey).Select(x => x).SingleOrDefault();
+                _message = "Bạn không có quyền đổi mật khẩu tài khoản này !!";
+                var changpass = db.EMPLOYEEs.Where(x=>x.apiKey == apiKey).Select(x => x).SingleOrDefault();
                 if (changpass != null)
                 {
                     changpass.password = CreateMD5Hash(passnew);

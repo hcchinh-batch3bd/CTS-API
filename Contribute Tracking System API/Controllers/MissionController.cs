@@ -196,10 +196,10 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { results = "", status = "false", message = "Not Found apiKey" });
 
         }
-        //Get list mission avaible
+        //Get list mission available
         [Route("Missison/Missionavaible")]
         [HttpGet]
-        public IHttpActionResult Missonavaible()
+        public IHttpActionResult Missonavailable()
         {
 
             string _message = "Danh sách nhiệm vụ đang còn";
@@ -234,9 +234,9 @@ namespace Contribute_Tracking_System_API.Controllers
             return Ok(new { results = key, status = _status, message = _message });
         }
         //Get list mission process of employee
-        [Route("Mission/Missionavaibleemp")]
+        [Route("Mission/Missionavailableemp")]
         [HttpGet]
-        public IHttpActionResult Missionavaibleemp([FromUri] string apiKey)
+        public IHttpActionResult Missionavailableemp([FromUri] string apiKey)
         {
             List<object> miss = new List<object>();
             string _message = "";

@@ -22,6 +22,7 @@ namespace Contribute_Tracking_System_API
             config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
             config.Formatters.JsonFormatter.SerializerSettings
             .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            
         }
             
     }
