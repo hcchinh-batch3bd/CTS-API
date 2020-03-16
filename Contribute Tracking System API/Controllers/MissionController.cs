@@ -24,7 +24,7 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             if (apiKey != null)
             {
-                var check = db.EMPLOYEEs.Where(s => s.apiKey == apiKey).Select(a => a.id_employee).SingleOrDefault();
+                var check = db.EMPLOYEEs.Where(s => s.apiKey == apiKey && s.status== true).Select(a => a.id_employee).SingleOrDefault();
                 if (check > 0)
                 {
                     var level = db.EMPLOYEEs.Where(b => b.id_employee == check && b.level_employee == true).Select(b => b.id_employee).SingleOrDefault();
@@ -33,7 +33,7 @@ namespace Contribute_Tracking_System_API.Controllers
                         var check2 = db.MISSIONs.Where(x => x.id_mission == id).Select(x => x.id_mission).SingleOrDefault();
                         if (check2 > 0)
                         {
-                            var clear = db.MISSIONs.Where(x => x.id_employee == level && x.id_mission == check2).ToList();
+                            var clear = db.MISSIONs.Where(x=>x.id_mission == check2).ToList();
                             clear.ForEach(x => { x.status = -1; });
                             db.SubmitChanges();
                             return Ok(new { message = "Tạm hủy thành công !" });
@@ -73,7 +73,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 bool _status = true;
 
                 var key = (from a in db.EMPLOYEEs
-                           where (a.apiKey == apiKey)
+                           where (a.apiKey == apiKey && a.status==true)
                            join b in db.MISSION_PROCESSes on a.id_employee equals b.id_employee
                            join c in db.MISSIONs on b.id_mission equals c.id_mission
                            where (b.status == 1)
@@ -93,19 +93,14 @@ namespace Contribute_Tracking_System_API.Controllers
         //Get Describe Mission
         [Route("Mission/{id}/Describe")]
         [HttpGet]
-        public IHttpActionResult GetDescribeMission(int id, [FromUri] string apiKey)
+        public IHttpActionResult GetDescribeMission(int id)
         {
-            if (apiKey != null)
-            {
                 string message = "Chi tiết của một nhiệm vụ";
                 bool status = true;
                 var key = db.MISSIONs.Where(s => s.id_mission == id).Select(m=> new { m.id_mission, m.name_mission, m.Stardate, m.point, m.exprie, m.describe, m.id_type, m.id_employee });
                 if (!key.Any())
                     message = "Không có chi tiết nhiệm vụ nào hết !";
                 return Ok(new { results = key, status = status, message = message });
-            }
-            else
-                return Ok(new { results = "", status = "false", message = "Not Found apiKey" });
 
         }
         //Create Mission
@@ -115,12 +110,23 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             if (apiKey != null)
             {
-                var check = db.EMPLOYEEs.Where(s => s.apiKey.Equals(apiKey) && s.level_employee==true).Select(x => x.id_employee).Count();
-                string messeage = "Tạo nhiệm vụ thành công !";
-                var key = db.EMPLOYEEs.Where(s => s.apiKey == apiKey);
-                db.MISSIONs.InsertOnSubmit(mission);
-                db.SubmitChanges();
-                return Ok(new { message = messeage });
+                var check = db.EMPLOYEEs.Where(s => s.apiKey.Equals(apiKey) && s.status== true).Select(x=> new {x.id_employee, x.level_employee}).SingleOrDefault();
+                if(check!=null)
+                {
+                    string messeage = "Tạo nhiệm vụ thành công !";
+                    if (check.level_employee)
+                    {
+                        mission.status = 1;
+                    }
+                    else
+                        mission.status = 0;
+                    mission.id_employee = check.id_employee;
+                    db.MISSIONs.InsertOnSubmit(mission);
+                    db.SubmitChanges();
+                    return Ok(new { message = messeage });
+                }
+               else
+                    return Ok(new { message = "Tài khoản này không tồn tại" });
             }
             else
                 return Ok(new { message = "Not Found apiKey" });
@@ -153,13 +159,13 @@ namespace Contribute_Tracking_System_API.Controllers
 
         }
         //Confim Mission of Admin
-        [Route("Mission/{id}/Confim")]
+        [Route("Mission/{id}/Confirm")]
         [HttpPut]
-        public IHttpActionResult ConfimMission(int id, [FromUri] string apiKey)
+        public IHttpActionResult ConfirmMission(int id, [FromUri] string apiKey)
         {
             if (apiKey != null)
             {
-                var check = db.EMPLOYEEs.Where(s => s.apiKey.Equals(apiKey) && s.level_employee == true).Select(x => x.id_employee).Count();
+                var check = db.EMPLOYEEs.Where(s => s.apiKey.Equals(apiKey) && s.status==true && s.level_employee == true).Select(x => x.id_employee).Count();
                 if (check > 0)
                 {
                     foreach (var i in db.MISSIONs)
@@ -180,9 +186,9 @@ namespace Contribute_Tracking_System_API.Controllers
         //Get Search Mission
         [Route("Mission/Search")]
         [HttpGet]
-        public IHttpActionResult GetSearchMission([FromUri] string key, [FromUri] string apiKey)
+        public IHttpActionResult GetSearchMission([FromUri] string key)
         {
-            if (apiKey != null && key != null)
+            if (key != null)
             {
                 string _messeage = "Tìm kiếm thành công !";
                 bool _status = true;
@@ -193,7 +199,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { result = search, status = _status, messeage = _messeage });
             }
             else
-                return Ok(new { results = "", status = "false", message = "Not Found apiKey" });
+                return Ok(new { results = "", status = "false", message = "Chưa nhập từ khóa cần tìm kiếm !!" });
 
         }
         //Get list mission available
