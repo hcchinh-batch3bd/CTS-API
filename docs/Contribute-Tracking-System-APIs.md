@@ -27,7 +27,7 @@ Is there a limit to the number of requests an user can send? No limit
 > Change password
 ```json http
 {
-  "method": "get",
+  "method": "put",
   "url": "https://api.hotrogame.online/Account/Changepassword?passnew=&apiKey="
 }
 ```
