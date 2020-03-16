@@ -1,6 +1,3 @@
---- tags: [api] --- 
-
-
 ![Ref a model](../assets/images/logo.png) 
 # Contribute-Tracking-System-APIs 
 ### **Introduction** 
@@ -153,6 +150,43 @@ Get list mission availble
 {
   "method": "get",
   "url": "https://api.hotrogame.online/Type_Mission/GetAll"
+}
+```
+> Get information type mission with ID
+```json http
+{
+  "method": "get",
+  "url": "https://api.hotrogame.online/Type_Mission/id"
+}
+```
+> Creata a type mission
+```json http
+{
+  "method": "post",
+  "url": "https://api.hotrogame.online/Type_Mission/Create",
+  "query": {
+    "apiKey": ""
+  },
+  "body": "{\n  \"id_type\": 0,\n  \"name_type_mission\": null,\n  \"id_employee\": 0,\n  \"status\": true,\n  \"date\": \"string\"\n}"
+}
+```
+> Edit type mission
+```json http
+{
+  "method": "put",
+  "url": "https://api.hotrogame.online/Type_Mission/Edit",
+  "body": "{\n  \"id_type\": 0,\n  \"name_type_mission\": null,\n  \"id_employee\": 0,\n  \"status\": true,\n  \"date\": \"string\"\n}"
+}
+```
+> Remove type mission with ID
+
+```json http
+{
+  "method": "put",
+  "url": "https://api.hotrogame.online/Type_Mission/id/Remove",
+  "query": {
+    "apiKey": ""
+  }
 }
 ```
 
