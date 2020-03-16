@@ -761,9 +761,9 @@
       }
     },
     "/Type_Mission/Edit": {
-      "get": {
+      "put": {
         "summary": "Edit type mission",
-        "tags": [],
+        "operationId": "put-Type_Mission-Edit",
         "responses": {
           "200": {
             "description": "OK",
@@ -773,14 +773,10 @@
                 "message": {
                   "type": "string"
                 }
-              },
-              "required": [
-                "message"
-              ]
+              }
             }
           }
         },
-        "operationId": "get-Type_Mission-Edit",
         "description": "Edit type mission",
         "parameters": [
           {
@@ -788,8 +784,7 @@
             "name": "body",
             "schema": {
               "$ref": "#/definitions/TypeMission"
-            },
-            "description": "Model Type mission"
+            }
           }
         ]
       }

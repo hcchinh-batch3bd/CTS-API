@@ -1,6 +1,3 @@
---- tags: [api] --- 
-
-
 ![Ref a model](../assets/images/logo.png) 
 # Contribute-Tracking-System-APIs 
 ### **Introduction** 
@@ -30,7 +27,7 @@ Is there a limit to the number of requests an user can send? No limit
 > Change password
 ```json http
 {
-  "method": "get",
+  "method": "put",
   "url": "https://api.hotrogame.online/Account/Changepassword?passnew=&apiKey="
 }
 ```
@@ -126,9 +123,7 @@ Get list mission availble
 {
   "method": "get",
   "url": "https://api.hotrogame.online/Missison/Missionavailable",
-  "query": {
-    "apiKey": ""
-  }
+
 }
 ```
 > Get list mission process of employee
