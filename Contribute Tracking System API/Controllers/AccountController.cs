@@ -28,7 +28,7 @@ namespace Contribute_Tracking_System_API.Controllers
             {
                 _message = "Đăng nhập thành công !!";
                 _status = true;
-                var key = db.EMPLOYEEs.Where(x => x.id_employee == int.Parse(id) && x.password == CreateMD5Hash(pw)).Select(s => new { s.name_employee, s.point, s.apiKey });
+                var key = db.EMPLOYEEs.Where(x => x.id_employee == int.Parse(id) && x.password == CreateMD5Hash(pw) && x.status==true).Select(s => new { s.name_employee, s.point, s.apiKey });
                 if (!key.Any())
                     _message = "ID đăng nhập hoặc mật khẩu không hợp lệ !!";
                 return Ok(new { results = key, status = _status, message = _message });
@@ -59,13 +59,13 @@ namespace Contribute_Tracking_System_API.Controllers
         //Đổi mật khẩu
         [Route("Account/Changepassword")]
         [HttpPut]
-        public IHttpActionResult ChangePassword([FromUri] string passnew, [FromUri] string passold, [FromUri] string apiKey)
+        public IHttpActionResult ChangePassword([FromUri] string passnew, [FromUri] string apiKey)
         {
             string _message = "";
             if (passnew != null && apiKey != null)
             {
                 _message = "Bạn không có quyền đổi mật khẩu tài khoản này !!";
-                var changpass = db.EMPLOYEEs.Where(x=>x.apiKey == apiKey).Select(x => x).SingleOrDefault();
+                var changpass = db.EMPLOYEEs.Where(x=>x.apiKey == apiKey && x.status==true).Select(x => x).SingleOrDefault();
                 if (changpass != null)
                 {
                     changpass.password = CreateMD5Hash(passnew);
@@ -84,7 +84,7 @@ namespace Contribute_Tracking_System_API.Controllers
             string _message = "Bad request";
             if (apiKey != null)
             {
-                bool CheckApi = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.level_employee).FirstOrDefault();
+                bool CheckApi = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status==true).Select(x => x.level_employee).FirstOrDefault();
                 if (CheckApi)
                 {
                     bool changeStatus = false;
@@ -134,7 +134,7 @@ namespace Contribute_Tracking_System_API.Controllers
             bool _status = true;
             if (apiKey != null)
             {
-                int checkApiKey = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.apiKey).Count();
+                int checkApiKey = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status== true).Select(x => x.apiKey).Count();
                 if (checkApiKey != 0)
                 {
                     _message = "Danh sách nhân viên!!";
