@@ -18,6 +18,12 @@ namespace Contribute_Tracking_System_API.Controllers
     {
         private APIDataClassesDataContext db = new APIDataClassesDataContext();
         //Hủy Mission
+        /// <summary>
+        /// This method delete a mission with id_mission == id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="apiKey"></param>
+        /// <returns> a json contraining result a message</returns>
         [Route("Mission/{id}/ClearMission")]
         [HttpPut]
         public IHttpActionResult ClearMission(int id, [FromUri] string apiKey)
@@ -62,6 +68,11 @@ namespace Contribute_Tracking_System_API.Controllers
 
 
         }
+        /// <summary>
+        /// This method Get a complete list of tasks completed by 1 employee
+        /// </summary>
+        /// <param name="apiKey"></param>
+        /// <returns>a json contraining result value(id_mission, name_misson, point, date0</returns>
         //Get List Mission
         [Route("Mission/ListMissionComplete")]
         [HttpGet]
@@ -88,8 +99,12 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { results = "", status = "false", message = "Not Found apiKey" });
 
         }
-        //Get list mission 
 
+        /// <summary>
+        /// This method Retrieve details of a quest
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns> a json contraining result value (id_mission, name_mission, Stardate, point, exprie, describe, id_type, id_employee )</returns>
         //Get Describe Mission
         [Route("Mission/{id}/Describe")]
         [HttpGet]
@@ -103,6 +118,12 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { results = key, status = status, message = message });
 
         }
+        /// <summary>
+        /// This method Create a Mission
+        /// </summary>
+        /// <param name="mission"></param>
+        /// <param name="apiKey"></param>
+        /// <returns>  a json contraining result a message</returns>
         //Create Mission
         [Route("Mission/Create")]
         [HttpPost]
@@ -131,6 +152,12 @@ namespace Contribute_Tracking_System_API.Controllers
             else
                 return Ok(new { message = "Not Found apiKey" });
         }
+        /// <summary>
+        /// This method Confirm completed mission
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="apiKey"></param>
+        /// <returns>a json contraining result message</returns>
         //Complete Mission
         [Route("Mission/{id}/CompleteMission")]
         [HttpPut]
@@ -158,6 +185,12 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { message = "Not Found apiKey" });
 
         }
+        /// <summary>
+        /// This method Confirm duties for staff
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="apiKey"></param>
+        /// <returns>a json contraining result message</returns>
         //Confim Mission of Admin
         [Route("Mission/{id}/Confirm")]
         [HttpPut]
@@ -183,6 +216,11 @@ namespace Contribute_Tracking_System_API.Controllers
             else
                 return Ok(new { message = "Not Found apiKey" });
         }
+        /// <summary>
+        ///  The method Search for a mission by key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns> a json contraining result value(id_mission, name_mission, Stardate, point, exprie, describe, id_type, id_employee)</returns>
         //Get Search Mission
         [Route("Mission/Search")]
         [HttpGet]
@@ -202,7 +240,10 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { results = "", status = "false", message = "Chưa nhập từ khóa cần tìm kiếm !!" });
 
         }
-        //Get list mission available
+        /// <summary>
+        /// This method Get a list of all active missions
+        /// </summary>
+        /// <returns>a json contraining result a value(id.mission, name.mission, stardate, point, exprite, decribe, id.typemission, id.employee)</returns>
         [Route("Missison/Missionavaible")]
         [HttpGet]
         public IHttpActionResult Missonavailable()
@@ -239,6 +280,11 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             return Ok(new { results = key, status = _status, message = _message });
         }
+        /// <summary>
+        /// Get a list of all tasks performed by 1 employee
+        /// </summary>
+        /// <param name="apiKey"></param>
+        /// <returns> a json contraining result a value(id.mission, name.mission, stardate, point, exprite, decribe, id.typemission, id.employee)</returns>
         //Get list mission process of employee
         [Route("Mission/Missionavailableemp")]
         [HttpGet]
@@ -276,7 +322,11 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Bạn chưa nhập apiKey";
             return Ok(new { results = miss, status = _status, message = _message });
         }
-       
+        /// <summary>
+        /// This method get all list mission
+        /// </summary>
+        /// <returns>a json contraining result value(id_mission, name_mission, Stardate, point, exprie, describe, status,  Count,  id_type, id_employee )</returns>
+
         //Get list mission
         [Route("Mission/ListMission")]
         [HttpGet]

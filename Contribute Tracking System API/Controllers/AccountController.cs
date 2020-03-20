@@ -18,6 +18,12 @@ namespace Contribute_Tracking_System_API.Controllers
     {
 
         private APIDataClassesDataContext db = new APIDataClassesDataContext();
+        /// <summary>
+        /// This method Get check Login
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="pw"></param>
+        /// <returns> a json contraining result a message</returns>
         [Route("Account/CheckLogin")]
         [HttpGet]
         public IHttpActionResult GetCheckLogin([FromUri] string id, [FromUri] string pw)
@@ -35,6 +41,11 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             else return Ok(new { results = "", status = _status, message = _message });
         }
+        /// <summary>
+        /// This method Send a verification code (OTP) to retrieve your password
+        /// </summary>
+        /// <param name="mail"></param>
+        /// <returns> a json contraining result a message</returns>
         //Gửi OTP
         [Route("Account/OTP")]
         [HttpGet]
@@ -56,6 +67,12 @@ namespace Contribute_Tracking_System_API.Controllers
             return Ok(new {message = _message });
 
         }
+        /// <summary>
+        ///  This method Change the password for the account
+        /// </summary>
+        /// <param name="passnew"></param>
+        /// <param name="apiKey"></param>
+        /// <returns>a json contraining reslut a message</returns>
         //Đổi mật khẩu
         [Route("Account/Changepassword")]
         [HttpPut]
@@ -76,6 +93,12 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Bạn chưa nhập dầy đủ thông tin !!";
             return Ok(new {message = _message });
         }
+        /// <summary>
+        ///  This method cancel a employee
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="apiKey"></param>
+        /// <returns> a json contraining reslut a message</returns>
         //API xóa một nhân viên
         [Route("Account/{id}/DeleteEmployee")]
         [HttpPut]
@@ -104,6 +127,11 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             return Ok(new {message = _message });
         }
+        /// <summary>
+        /// This method Rank employee by point
+        /// </summary>
+        /// <param name="apiKey"></param>
+        /// <returns> a json contraining result a list rank with value ( id_employee, name_employee, point )</returns>
         //API xếp hạng nhân viên theo điểm
         [Route("Account/RankEmployee")]
         [HttpGet]
@@ -124,6 +152,11 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             return Ok(new { results = "", status = _status, message = _message });
         }
+        /// <summary>
+        /// This method getall employee
+        /// </summary>
+        /// <param name="apiKey"></param>
+        /// <returns>a json contraining result a list employee</returns>
         //Load List Employee
         [Route("Account/ListEmployee")]
         [HttpGet]
@@ -168,6 +201,13 @@ namespace Contribute_Tracking_System_API.Controllers
 
             else return Ok(new { results = "", status = _status, message = _message });
         }
+        /// <summary>
+        /// This method Loan data employee
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="level"></param>
+        /// <param name="status"></param>
+        /// <returns> a json contraining result value(id.employee, name.employee, email, date, point, level, status)</returns>
         //Load Data
         private IEnumerable<object> LoadData(int id, string level, string status)
         {
