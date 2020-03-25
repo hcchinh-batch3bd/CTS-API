@@ -83,19 +83,22 @@ namespace Contribute_Tracking_System_API.Controllers
         //Đổi mật khẩu
         [Route("Account/Changepassword")]
         [HttpPut]
-        public IHttpActionResult ChangePassword([FromUri] string passnew, [FromUri] string apiKey)
+        public IHttpActionResult ChangePassword([FromUri] string passold, [FromUri] string passnew, [FromUri] string apiKey)
         {
             string _message = "";
-            if (passnew != null && apiKey != null)
+            if (passold != null  && passnew != null && apiKey != null)
             {
                 _message = "Bạn không có quyền đổi mật khẩu tài khoản này !!";
-                var changpass = db.EMPLOYEEs.Where(x=>x.apiKey == apiKey && x.status==true).Select(x => x).SingleOrDefault();
+                var changpass = db.EMPLOYEEs.Where(x=>x.apiKey == apiKey && x.status==true && x.password  == Encrypt(passold)).Select(x => x).SingleOrDefault();
                 if (changpass != null)
                 {
                     changpass.password = Encrypt(passnew);
+                    changpass.apiKey = RandomAPI(10, true);
                     db.SubmitChanges();
-                    _message = " Đổi mật khẩu thành công";
+                    _message = " Đổi mật khẩu thành công !!";
                 }
+                else
+                    _message = "Mật khẩu cũ không đúng !!";
             }
             else _message = "Bạn chưa nhập dầy đủ thông tin !!";
             return Ok(new {message = _message });
@@ -206,6 +209,38 @@ namespace Contribute_Tracking_System_API.Controllers
             });
         }
         /// <summary>
+        /// This method create employe
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <param name="apiKey"></param>
+        /// <returns>a json contraining reslut a message</returns>
+        [Route("Employee/Create")]
+        [HttpPost]
+        public IHttpActionResult Post([FromBody] EMPLOYEE employee, [FromUri] string apiKey)
+        {
+            if (employee != null && apiKey != null)
+            {
+                var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status == true).Select(x => x.level_employee).FirstOrDefault();
+                if (check)
+                {
+                    employee.password = Encrypt(employee.password);
+                    employee.apiKey = RandomAPI(20, false);
+                    employee.status = true;
+                    db.EMPLOYEEs.InsertOnSubmit(employee);
+                    db.SubmitChanges();
+                    return Ok(new { message = "Thêm nhân viên thành công!" });
+                }
+                else
+                {
+                    return Ok(new { message = "Không có quyền thêm!" });
+                }
+            }
+            else
+            {
+                return Ok(new { message = "Vui lòng nhập thông tin" });
+            }
+        }
+        /// <summary>
         /// This method 
         /// </summary>
         /// <param name="input"></param>
@@ -250,6 +285,26 @@ namespace Contribute_Tracking_System_API.Controllers
                 Console.WriteLine("Error: " + ex.Message);
             }
             return flags;
+        }
+        /// <summary>
+        /// Method random string API
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="lowerCase"></param>
+        /// <returns></returns>
+        public string RandomAPI(int size, bool lowerCase)
+        {
+            StringBuilder builder = new StringBuilder();
+            Random random = new Random();
+            char ch;
+            for (int i = 0; i < size; i++)
+            {
+                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+                builder.Append(ch);
+            }
+            if (lowerCase)
+                return builder.ToString().ToLower();
+            return builder.ToString();
         }
     }
 }

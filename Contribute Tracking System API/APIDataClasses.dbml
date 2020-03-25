@@ -46,10 +46,11 @@
   </Table>
   <Table Name="dbo.MISSION_PROCESS" Member="MISSION_PROCESSes">
     <Type Name="MISSION_PROCESS">
-      <Column Name="id_employee" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
-      <Column Name="id_mission" Type="System.Int32" DbType="Int NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="id_employee" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="id_mission" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="date" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Association Name="EMPLOYEE_MISSION_PROCESS" Member="EMPLOYEE" ThisKey="id_employee" OtherKey="id_employee" Type="EMPLOYEE" IsForeignKey="true" />
       <Association Name="MISSION_MISSION_PROCESS" Member="MISSION" ThisKey="id_mission" OtherKey="id_mission" Type="MISSION" IsForeignKey="true" />
     </Type>

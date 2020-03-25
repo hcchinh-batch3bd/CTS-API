@@ -144,6 +144,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 {
                     var complete = db.MISSION_PROCESSes.Where(x => x.id_employee == check && x.id_mission == id).Select(x => x).SingleOrDefault();
                     complete.status = 1;
+                    complete.date = DateTime.Now;
                     var pointmission = db.MISSIONs.Where(a => a.id_mission == id).Select(a => a.point).SingleOrDefault();
                     var check2 = db.EMPLOYEEs.Where(s => s.id_employee== check).Select(x => x).SingleOrDefault();
                     check2.point = check2.point + pointmission;
@@ -293,6 +294,50 @@ namespace Contribute_Tracking_System_API.Controllers
                 _message = "Không có danh sách nhiệm vụ";
             }
             return Ok(new { results = key, status = _status, message = _message });
+
+        }
+        [Route("Mission/{id}/Order")]
+        [HttpPost]
+        public IHttpActionResult Order(int id, [FromUri] string apiKey)
+        {
+
+            if (id != 0 && apiKey != null)
+            {
+                var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status == true).Select(x => x).FirstOrDefault();
+                var getMission = db.MISSIONs.Where(x => x.id_mission == id && x.Count >= 0).Select(x => x).FirstOrDefault();
+                if (check != null)
+                {
+                    if (getMission != null)
+                    {
+                        var create_MS = db.MISSION_PROCESSes.Where(x => x.id_employee == check.id_employee && x.id_mission == getMission.id_mission).SingleOrDefault();
+                        if (create_MS == null)
+                        {
+                            MISSION_PROCESS mISSION_PROCESS = new MISSION_PROCESS();
+                            mISSION_PROCESS.id_employee = check.id_employee;
+                            mISSION_PROCESS.id_mission = getMission.id_mission;
+                            db.MISSION_PROCESSes.InsertOnSubmit(mISSION_PROCESS);
+                            db.SubmitChanges();
+                            return Ok(new { message = "Nhận nhiệm vụ thành công !!" });
+                        }
+                        else
+                        {
+                            return Ok(new { message = "Bạn đã nhận nhiệm vụ này rồi" });
+                        }
+                    }
+                    else
+                    {
+                        return Ok(new { message = "Rất tiếc! Nhiệm vụ này đã hết lượt nhận" });
+                    }
+                }
+                else
+                {
+                    return Ok(new { message = "Nhân viên này không hoạt động" });
+                }
+            }
+            else
+            {
+                return Ok(new { message = "Vui lòng chọn nhiệm vụ" });
+            }
 
         }
     }

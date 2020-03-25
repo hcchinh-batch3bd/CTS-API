@@ -1074,6 +1074,8 @@ namespace Contribute_Tracking_System_API
 		
 		private System.Nullable<System.DateTime> _date;
 		
+		private int _id;
+		
 		private EntityRef<EMPLOYEE> _EMPLOYEE;
 		
 		private EntityRef<MISSION> _MISSION;
@@ -1090,6 +1092,8 @@ namespace Contribute_Tracking_System_API
     partial void OnstatusChanged();
     partial void OndateChanging(System.Nullable<System.DateTime> value);
     partial void OndateChanged();
+    partial void OnidChanging(int value);
+    partial void OnidChanged();
     #endregion
 		
 		public MISSION_PROCESS()
@@ -1099,7 +1103,7 @@ namespace Contribute_Tracking_System_API
 			OnCreated();
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_employee", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_employee", DbType="Int NOT NULL")]
 		public int id_employee
 		{
 			get
@@ -1123,7 +1127,7 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_mission", DbType="Int NOT NULL", IsPrimaryKey=true)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_mission", DbType="Int NOT NULL")]
 		public int id_mission
 		{
 			get
@@ -1183,6 +1187,26 @@ namespace Contribute_Tracking_System_API
 					this._date = value;
 					this.SendPropertyChanged("date");
 					this.OndateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int id
+		{
+			get
+			{
+				return this._id;
+			}
+			set
+			{
+				if ((this._id != value))
+				{
+					this.OnidChanging(value);
+					this.SendPropertyChanging();
+					this._id = value;
+					this.SendPropertyChanged("id");
+					this.OnidChanged();
 				}
 			}
 		}
