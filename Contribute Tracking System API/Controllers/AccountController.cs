@@ -16,8 +16,12 @@ namespace Contribute_Tracking_System_API.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*", exposedHeaders: "X-My-Header")]
     public class AccountController : ApiController
     {
-
+        const string badrequest = "Bad request";
         private APIDataClassesDataContext db = new APIDataClassesDataContext();
+        /// <summary>This method check access login.</summary>
+        /// <param name="id">id of account.</param>
+        /// <param name="pw">password of account.</param>
+        /// <returns>a json containing result value (name_employee, point, level_employee, apiKey) for id + pw specified, status query, message string/returns>
         [Route("Account/CheckLogin")]
         [HttpGet]
         public IHttpActionResult GetCheckLogin([FromUri] string id, [FromUri] string pw)
@@ -28,14 +32,34 @@ namespace Contribute_Tracking_System_API.Controllers
             {
                 _message = "Đăng nhập thành công !!";
                 _status = true;
-                var key = db.EMPLOYEEs.Where(x => x.id_employee == int.Parse(id) && x.password == CreateMD5Hash(pw) && x.status==true).Select(s => new { s.name_employee, s.point, s.apiKey });
+                var key = db.EMPLOYEEs.Where(x => x.id_employee == int.Parse(id) && x.password == Encrypt(pw) && x.status==true).Select(s => new {s.id_employee, s.name_employee, s.point, s.level_employee, s.apiKey });
                 if (!key.Any())
                     _message = "ID đăng nhập hoặc mật khẩu không hợp lệ !!";
                 return Ok(new { results = key, status = _status, message = _message });
             }
             else return Ok(new { results = "", status = _status, message = _message });
         }
-        //Gửi OTP
+        [Route("Account/")]
+        [HttpGet]
+        public IHttpActionResult GetInfo([FromUri] string apiKey)
+        {
+            var employee = db.EMPLOYEEs.Where(s => s.apiKey == apiKey).Select(s=>new { s.id_employee, s.name_employee, s.point, s.level_employee }).FirstOrDefault();
+            var totalProcess = db.MISSION_PROCESSes.Where(s => s.id_employee == employee.id_employee && s.status == 0).Count();
+            var totalComplete = db.MISSION_PROCESSes.Where(s => s.id_employee == employee.id_employee && s.status == 1).Count();
+            return Ok(new {
+                    id_employee = employee.id_employee,
+                    name_employee = employee.name_employee,
+                    level = employee.level_employee,
+                    point = employee.point,
+                    totalProcess = totalProcess,
+                    totalComplete = totalComplete
+           });
+        }
+        /// <summary>
+        /// This method will sent OTP(One time password) to mail of account request forget password
+        /// </summary>
+        /// <param name="mail">mail of account forget password</param>
+        /// <returns>a json containing message </returns>
         [Route("Account/OTP")]
         [HttpGet]
         public IHttpActionResult SendOTP([FromUri] string mail)
@@ -68,7 +92,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 var changpass = db.EMPLOYEEs.Where(x=>x.apiKey == apiKey && x.status==true).Select(x => x).SingleOrDefault();
                 if (changpass != null)
                 {
-                    changpass.password = CreateMD5Hash(passnew);
+                    changpass.password = Encrypt(passnew);
                     db.SubmitChanges();
                     _message = " Đổi mật khẩu thành công";
                 }
@@ -181,15 +205,16 @@ namespace Contribute_Tracking_System_API.Controllers
                 status
             });
         }
-        //Create MD5 hash
-        public string CreateMD5Hash(string input)
+        /// <summary>
+        /// This method 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns>A string containing </returns>
+        public string Encrypt(string input)
         {
-            // Step 1, calculate MD5 hash from input
             MD5 md5 = System.Security.Cryptography.MD5.Create();
             byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
             byte[] hashBytes = md5.ComputeHash(inputBytes);
-
-            // Step 2, convert byte array to hex string
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < hashBytes.Length; i++)
             {
@@ -200,7 +225,7 @@ namespace Contribute_Tracking_System_API.Controllers
         //Client sent mail OTP
         public bool SendOTP(string from, string to, string subject, string body)
         {
-            bool f = false;
+            bool flags = false;
             try
             {
                 MailMessage mailMessage = new MailMessage();
@@ -217,13 +242,14 @@ namespace Contribute_Tracking_System_API.Controllers
                 client.EnableSsl = true;
 
                 client.Send(mailMessage);
-                f = true;
+                flags = true;
             }
             catch (Exception ex)
             {
-                f = false;
+                flags = false;
+                Console.WriteLine("Error: " + ex.Message);
             }
-            return f;
+            return flags;
         }
     }
 }

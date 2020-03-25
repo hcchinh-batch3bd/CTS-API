@@ -62,6 +62,7 @@ namespace Contribute_Tracking_System_API.Controllers
 
 
         }
+         
         //Get List Mission
         [Route("Mission/ListMissionComplete")]
         [HttpGet]
@@ -77,7 +78,7 @@ namespace Contribute_Tracking_System_API.Controllers
                            join b in db.MISSION_PROCESSes on a.id_employee equals b.id_employee
                            join c in db.MISSIONs on b.id_mission equals c.id_mission
                            where (b.status == 1)
-                           select new {b.id_mission,c.name_mission, c.point, b.date}).ToList();
+                           select new {b.id_mission,c.name_mission, c.TYPE_MISSION.name_type_mission, c.point, b.date}).ToList();
 
                 if (!key.Any())
                     _message = "Nhân viên chưa hoàn thành nhiệm vụ nào hết !";
@@ -203,7 +204,7 @@ namespace Contribute_Tracking_System_API.Controllers
 
         }
         //Get list mission available
-        [Route("Missison/Missionavaible")]
+        [Route("Missison/Missionavailable")]
         [HttpGet]
         public IHttpActionResult Missonavailable()
         {
@@ -233,6 +234,7 @@ namespace Contribute_Tracking_System_API.Controllers
                         a.exprie,
                         a.describe,
                         a.id_type,
+                        c.id_employee,
                         c.name_employee
                     }); 
                 }
@@ -268,6 +270,7 @@ namespace Contribute_Tracking_System_API.Controllers
                                     a.exprie,
                                     a.describe,
                                     a.id_type,
+                                    c.id_employee,
                                     c.name_employee
                                 });
                     }
