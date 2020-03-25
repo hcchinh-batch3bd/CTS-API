@@ -12,7 +12,10 @@ namespace Contribute_Tracking_System_API.Controllers
     public class Type_MissionController : ApiController
     {
         private APIDataClassesDataContext db = new APIDataClassesDataContext();
-
+        /// <summary>
+        /// This method GetAll Type Mission 
+        /// </summary>
+        /// <returns> a json contraining result value(id_type, name_type_mission, id+employee, status, date)</returns>
         [Route("Type_Mission/GetAll")]
         [HttpGet]
         // GET: Type_mission Lấy tất cả loại nhiệm vụ
@@ -26,7 +29,10 @@ namespace Contribute_Tracking_System_API.Controllers
                 x.date
             });
         }
-
+        /// <summary>
+        /// This method GetAll Type Mission with status employee == true
+        /// </summary>
+        /// <returns>a json contraining result value(id_type, name_type_mission, id+employee, status, date)</returns>
         [Route("Type_Mission")]
         [HttpGet]
         // GET: Type_mission Lấy tất cả loại nhiệm vụ status = true
@@ -40,7 +46,11 @@ namespace Contribute_Tracking_System_API.Controllers
                 x.date
             });
         }
-
+        /// <summary>
+        /// This method getall type mission with id misson == id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>a json contraining result value(id_type, name_type_mission, id+employee, status, date)</returns>
         [Route("Type_Mission/{id}")]
         [HttpGet]
         // GET: Type_mission?id=8 Lấy tất cả loại nhiệm vụ theo id
@@ -54,7 +64,12 @@ namespace Contribute_Tracking_System_API.Controllers
                 x.date
             });
         }
-
+        /// <summary>
+        /// This method create one type mission
+        /// </summary>
+        /// <param name="type_mission"></param>
+        /// <param name="apiKey"></param>
+        /// <returns>a json contraining reslut message </returns>
 
         [Route("Type_Mission/Create")]
         [HttpPost]
@@ -63,7 +78,7 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             if(type_mission != null && apiKey!=null)
             {
-                var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x=>x.level_employee).FirstOrDefault();
+                var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status ==true).Select(x=>x.level_employee).FirstOrDefault();
                 if (check)
                 {
                     db.TYPE_MISSIONs.InsertOnSubmit(type_mission);
@@ -80,7 +95,12 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { message = "Vui lòng nhập loại nhiệm vụ" });
             }
         }
-
+        /// <summary>
+        /// This method edit type mission
+        /// </summary>
+        /// <param name="type_mission"></param>
+        /// <param name="apiKey"></param>
+        /// <returns> a json contraining result a message </returns>
         [Route("Type_Mission/Edit")]
         [HttpPut]
         // PUT: /Type_Mission?apiKey  Sửa loại nhiệm vụ
@@ -111,7 +131,12 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new {massage = "Vui lòng nhập thông tin!" });
             }
         }
-
+        /// <summary>
+        /// This method delete type mission with id_name_mission == id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="apiKey"></param>
+        /// <returns>a json contraining result a message</returns>
         [Route("Type_Mission/{id}/Remove")]
         [HttpPut]
         // PUT:Type_Mission/id/apiKey  Xóa loại nhiệm vụ theo id
@@ -131,9 +156,6 @@ namespace Contribute_Tracking_System_API.Controllers
             }
         }
 
-        // DELETE: Type_Mission/5
-        public void Delete(int id)
-        {
-        }
+       
     }
 }
