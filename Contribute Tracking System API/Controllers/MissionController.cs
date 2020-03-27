@@ -98,10 +98,24 @@ namespace Contribute_Tracking_System_API.Controllers
         {
                 string message = "Chi tiết của một nhiệm vụ";
                 bool status = true;
-                var key = db.MISSIONs.Where(s => s.id_mission == id).Select(m=> new { m.id_mission, m.name_mission, m.Stardate, m.point, m.exprie, m.describe, m.id_type, m.id_employee });
+                var getMission = db.MISSIONs.Where(x => x.id_mission == id).Select(x => x).FirstOrDefault();
+            if(getMission.Count==0)
+            {
+                int countProcess = db.MISSION_PROCESSes.Where(x => x.id_mission == getMission.id_mission).Count();
+                var key = db.MISSIONs.Where(s => s.id_mission == id).Select(m => new { m.id_mission, m.name_mission, m.Stardate, m.point, m.exprie, m.describe, m.id_type, m.id_employee, m.TYPE_MISSION.name_type_mission, m.EMPLOYEE.name_employee, m.Count, countProcess });
                 if (!key.Any())
                     message = "Không có chi tiết nhiệm vụ nào hết !";
                 return Ok(new { results = key, status = status, message = message });
+            }
+            else
+            {
+                int count = db.MISSION_PROCESSes.Where(x => x.id_mission == getMission.id_mission).Count();
+                int countProcess = getMission.Count - count;
+                var key = db.MISSIONs.Where(s => s.id_mission == id).Select(m => new { m.id_mission, m.name_mission, m.Stardate, m.point, m.exprie, m.describe, m.id_type, m.id_employee, m.TYPE_MISSION.name_type_mission, m.EMPLOYEE.name_employee, countProcess, m.Count });
+                if (!key.Any())
+                    message = "Không có chi tiết nhiệm vụ nào hết !";
+                return Ok(new { results = key, status = status, message = message });
+            }
 
         }
         //Create Mission
@@ -213,7 +227,7 @@ namespace Contribute_Tracking_System_API.Controllers
             string _message = "Danh sách nhiệm vụ đang còn";
             bool _status = true;
             List<object> key =  new List<object>();
-            foreach (var t in db.MISSIONs)
+            foreach (var t in db.MISSIONs.Where(x=>x.status==1))
             {
                 var id_mission = t.id_mission;
                 var starday = t.Stardate;
@@ -234,7 +248,7 @@ namespace Contribute_Tracking_System_API.Controllers
                         a.point,
                         a.exprie,
                         a.describe,
-                        a.id_type,
+                        a.TYPE_MISSION.name_type_mission,
                         c.id_employee,
                         c.name_employee
                     }); 
@@ -255,7 +269,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 _message = "Danh sách nhiệm vụ đang làm của 1 nhân viên";
                 _status = true;
                 var id = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.id_employee).SingleOrDefault();
-                foreach (var t in db.MISSION_PROCESSes.Where(x=>x.id_employee==id))
+                foreach (var t in db.MISSION_PROCESSes.Where(x=>x.id_employee==id && x.MISSION.status==1))
                 {
                     if (t.id_employee == id)
                     {
@@ -271,6 +285,7 @@ namespace Contribute_Tracking_System_API.Controllers
                                     a.exprie,
                                     a.describe,
                                     a.id_type,
+                                    a.TYPE_MISSION.name_type_mission,
                                     c.id_employee,
                                     c.name_employee
                                 });
@@ -288,7 +303,7 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             string _message = "Danh sách nhiệm vụ !!";
             bool _status = true;
-            var key = db.MISSIONs.Select(x => new { x.id_mission, x.name_mission, x.Stardate, x.point, x.exprie, x.describe, x.status,  x.Count,  x.id_type, x.id_employee });
+            var key = db.MISSIONs.Select(x => new { x.id_mission, x.name_mission, x.Stardate, x.point, x.exprie, x.describe, x.status,  x.Count,  x.id_type, x.id_employee,x.EMPLOYEE.name_employee, x.TYPE_MISSION.name_type_mission });
             if(!key.Any())
             {
                 _message = "Không có danh sách nhiệm vụ";
@@ -304,12 +319,14 @@ namespace Contribute_Tracking_System_API.Controllers
             if (id != 0 && apiKey != null)
             {
                 var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status == true).Select(x => x).FirstOrDefault();
-                var getMission = db.MISSIONs.Where(x => x.id_mission == id && x.Count >= 0).Select(x => x).FirstOrDefault();
+                
+                var getMission = db.MISSIONs.Where(x => x.id_mission == id).Select(x => x).FirstOrDefault();
+                var getCount = db.MISSION_PROCESSes.Where(x => x.id_mission == getMission.id_mission).Count();
                 if (check != null)
                 {
-                    if (getMission != null)
+                    if (getMission != null && getCount-getMission.Count>=0)
                     {
-                        var create_MS = db.MISSION_PROCESSes.Where(x => x.id_employee == check.id_employee && x.id_mission == getMission.id_mission).SingleOrDefault();
+                        var create_MS = db.MISSION_PROCESSes.Where(x => x.id_employee == check.id_employee && x.id_mission == getMission.id_mission && (x.status==1)).SingleOrDefault();
                         if (create_MS == null)
                         {
                             MISSION_PROCESS mISSION_PROCESS = new MISSION_PROCESS();
@@ -321,7 +338,7 @@ namespace Contribute_Tracking_System_API.Controllers
                         }
                         else
                         {
-                            return Ok(new { message = "Bạn đã nhận nhiệm vụ này rồi" });
+                            return Ok(new { message = "Nhiệm vụ này bạn đã nhận rồi vui lòng phải hoàn thành trước khi nhận lại !!" });
                         }
                     }
                     else

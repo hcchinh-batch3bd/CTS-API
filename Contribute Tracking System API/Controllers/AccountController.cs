@@ -9,7 +9,7 @@ using System.Text;
 using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Web.Http.Cors;
-
+using System.IO;
 
 namespace Contribute_Tracking_System_API.Controllers
 {
@@ -62,13 +62,12 @@ namespace Contribute_Tracking_System_API.Controllers
         /// <returns>a json containing message </returns>
         [Route("Account/OTP")]
         [HttpGet]
-        public IHttpActionResult SendOTP([FromUri] string mail)
+        public IHttpActionResult SendOTP([FromUri] string OTP,[FromUri] string mail)
         {
             string _message = "Bad request";
             if (mail != null)
             {
-                Random rnd = new Random();
-                int otp = rnd.Next(000000, 999999);
+                string otp = Decrypt(OTP);
                 string msg = "OTP để xác nhận lấy lại mật khẩu của bạn : " + otp;
                 bool f = SendOTP("lvx51523@outlook.com", mail, "Xác thực mail OTP", msg);
                 if (f)
@@ -79,6 +78,22 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             return Ok(new {message = _message });
 
+        }
+        static byte[] bytes = ASCIIEncoding.ASCII.GetBytes("OTPCTS12");
+        public static string Decrypt(string cryptedString)
+        {
+            if (String.IsNullOrEmpty(cryptedString))
+            {
+                throw new ArgumentNullException
+                   ("The string which needs to be decrypted can not be null.");
+            }
+            DESCryptoServiceProvider cryptoProvider = new DESCryptoServiceProvider();
+            MemoryStream memoryStream = new MemoryStream
+                    (Convert.FromBase64String(cryptedString));
+            CryptoStream cryptoStream = new CryptoStream(memoryStream,
+                cryptoProvider.CreateDecryptor(bytes, bytes), CryptoStreamMode.Read);
+            StreamReader reader = new StreamReader(cryptoStream);
+            return reader.ReadToEnd();
         }
         //Đổi mật khẩu
         [Route("Account/Changepassword")]
@@ -93,7 +108,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 if (changpass != null)
                 {
                     changpass.password = Encrypt(passnew);
-                    changpass.apiKey = RandomAPI(10, true);
+                    changpass.apiKey = RandomAPI(10, false);
                     db.SubmitChanges();
                     _message = " Đổi mật khẩu thành công !!";
                 }
@@ -269,13 +284,6 @@ namespace Contribute_Tracking_System_API.Controllers
                 mailMessage.Subject = subject;
                 mailMessage.Body = body;
                 SmtpClient client = new SmtpClient();
-                client.UseDefaultCredentials = false;
-                client.Credentials = new System.Net.NetworkCredential("lvx51523@outlook.com", "opencart123");
-                client.Port = 25; // 25 587
-                client.Host = "smtp.office365.com";
-                client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                client.EnableSsl = true;
-
                 client.Send(mailMessage);
                 flags = true;
             }
