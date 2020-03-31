@@ -32,7 +32,7 @@ namespace Contribute_Tracking_System_API.Controllers
             {
                 _message = "Đăng nhập thành công !!";
                 _status = true;
-                var key = db.EMPLOYEEs.Where(x => x.id_employee == int.Parse(id) && x.password == Encrypt(pw) && x.status==true).Select(s => new {s.id_employee, s.name_employee, s.point, s.level_employee, s.apiKey });
+                var key = db.EMPLOYEEs.Where(x => x.id_employee == int.Parse(id) && x.password == Encrypt(pw) && x.status == true).Select(s => new { s.id_employee, s.name_employee, s.point, s.level_employee, s.apiKey });
                 if (!key.Any())
                     _message = "ID đăng nhập hoặc mật khẩu không hợp lệ !!";
                 return Ok(new { results = key, status = _status, message = _message });
@@ -43,17 +43,18 @@ namespace Contribute_Tracking_System_API.Controllers
         [HttpGet]
         public IHttpActionResult GetInfo([FromUri] string apiKey)
         {
-            var employee = db.EMPLOYEEs.Where(s => s.apiKey == apiKey).Select(s=>new { s.id_employee, s.name_employee, s.point, s.level_employee }).FirstOrDefault();
+            var employee = db.EMPLOYEEs.Where(s => s.apiKey == apiKey).Select(s => new { s.id_employee, s.name_employee, s.point, s.level_employee }).FirstOrDefault();
             var totalProcess = db.MISSION_PROCESSes.Where(s => s.id_employee == employee.id_employee && s.status == 0).Count();
             var totalComplete = db.MISSION_PROCESSes.Where(s => s.id_employee == employee.id_employee && s.status == 1).Count();
-            return Ok(new {
-                    id_employee = employee.id_employee,
-                    name_employee = employee.name_employee,
-                    level = employee.level_employee,
-                    point = employee.point,
-                    totalProcess = totalProcess,
-                    totalComplete = totalComplete
-           });
+            return Ok(new
+            {
+                id_employee = employee.id_employee,
+                name_employee = employee.name_employee,
+                level = employee.level_employee,
+                point = employee.point,
+                totalProcess = totalProcess,
+                totalComplete = totalComplete
+            });
         }
         /// <summary>
         /// This method will sent OTP(One time password) to mail of account request forget password
@@ -62,49 +63,53 @@ namespace Contribute_Tracking_System_API.Controllers
         /// <returns>a json containing message </returns>
         [Route("Account/OTP")]
         [HttpGet]
-        public IHttpActionResult SendOTP([FromUri] string OTP,[FromUri] string mail)
+        public IHttpActionResult SendOTP([FromUri] string OTP, [FromUri] string mail)
         {
             string _message = "Bad request";
+            int _code = 0;
+            string _secretcode = "";
             if (mail != null)
             {
-                string otp = Decrypt(OTP);
-                string msg = "OTP để xác nhận lấy lại mật khẩu của bạn : " + otp;
-                bool f = SendOTP("lvx51523@outlook.com", mail, "Xác thực mail OTP", msg);
-                if (f)
+                var checkmail = db.EMPLOYEEs.Where(x => x.email == mail).Count();
+                if (checkmail != 0)
                 {
-                    _message = "Đã gửi OTP đến mail !!";
+                    string otp = Decrypt(OTP);
+                    string msg = "OTP để xác nhận lấy lại mật khẩu của bạn : " + otp;
+                    bool f = SendOTP(mail, "Xác thực mail OTP", msg);
+                    if (f)
+                    {
+                        _message = "Đã gửi OTP đến mail !!";
+                        _code = 1;
+                        var secretcode = db.EMPLOYEEs.Where(x => x.email == mail).Select(x => x.apiKey).SingleOrDefault();
+                        _secretcode = Encrypt(secretcode);
+                    }
+                    else
+                    {
+                        _message = "Gửi OTP thất bại, thử lại sau !! !!";
+                        _code = 0;
+                    }
                 }
-                else { _message = "Gửi OTP thất bại, thử lại sau !! !!"; }
+                else
+                {
+                    _message = "Không tìm thấy tài khoản nào với email này !!!";
+                    _code = -1;
+                }
+
             }
-            return Ok(new {message = _message });
+            return Ok(new { message = _message, code = _code, secretcode = _secretcode });
 
         }
-        static byte[] bytes = ASCIIEncoding.ASCII.GetBytes("OTPCTS12");
-        public static string Decrypt(string cryptedString)
-        {
-            if (String.IsNullOrEmpty(cryptedString))
-            {
-                throw new ArgumentNullException
-                   ("The string which needs to be decrypted can not be null.");
-            }
-            DESCryptoServiceProvider cryptoProvider = new DESCryptoServiceProvider();
-            MemoryStream memoryStream = new MemoryStream
-                    (Convert.FromBase64String(cryptedString));
-            CryptoStream cryptoStream = new CryptoStream(memoryStream,
-                cryptoProvider.CreateDecryptor(bytes, bytes), CryptoStreamMode.Read);
-            StreamReader reader = new StreamReader(cryptoStream);
-            return reader.ReadToEnd();
-        }
+        private const string mysecurityKey = "CTSOTP12";
         //Đổi mật khẩu
         [Route("Account/Changepassword")]
         [HttpPut]
         public IHttpActionResult ChangePassword([FromUri] string passold, [FromUri] string passnew, [FromUri] string apiKey)
         {
             string _message = "";
-            if (passold != null  && passnew != null && apiKey != null)
+            if (passold != null && passnew != null && apiKey != null)
             {
                 _message = "Bạn không có quyền đổi mật khẩu tài khoản này !!";
-                var changpass = db.EMPLOYEEs.Where(x=>x.apiKey == apiKey && x.status==true && x.password  == Encrypt(passold)).Select(x => x).SingleOrDefault();
+                var changpass = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status == true && x.password == Encrypt(passold)).Select(x => x).SingleOrDefault();
                 if (changpass != null)
                 {
                     changpass.password = Encrypt(passnew);
@@ -116,7 +121,30 @@ namespace Contribute_Tracking_System_API.Controllers
                     _message = "Mật khẩu cũ không đúng !!";
             }
             else _message = "Bạn chưa nhập dầy đủ thông tin !!";
-            return Ok(new {message = _message });
+            return Ok(new { message = _message });
+        }
+        ///
+        [Route("Account/ChangepasswordOTP")]
+        [HttpPut]
+        public IHttpActionResult ChangePasswordWithOTP([FromUri] string passnew, [FromUri] string apiKey)
+        {
+            string _message = "";
+            if (passnew != null && apiKey != null)
+            {
+                _message = "Bạn không có quyền đổi mật khẩu tài khoản này !!";
+                var changpass = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status == true).Select(x => x).SingleOrDefault();
+                if (changpass != null)
+                {
+                    changpass.password = Encrypt(passnew);
+                    changpass.apiKey = RandomAPI(10, false);
+                    db.SubmitChanges();
+                    _message = " Đổi mật khẩu thành công !!";
+                }
+                else
+                    _message = "Tài khoản không hợp lệ !!";
+            }
+            else _message = "Bạn chưa nhập dầy đủ thông tin !!";
+            return Ok(new { message = _message });
         }
         //API xóa một nhân viên
         [Route("Account/{id}/DeleteEmployee")]
@@ -126,7 +154,7 @@ namespace Contribute_Tracking_System_API.Controllers
             string _message = "Bad request";
             if (apiKey != null)
             {
-                bool CheckApi = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status==true).Select(x => x.level_employee).FirstOrDefault();
+                bool CheckApi = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status == true).Select(x => x.level_employee).FirstOrDefault();
                 if (CheckApi)
                 {
                     bool changeStatus = false;
@@ -144,7 +172,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 }
                 else _message = "Không có quyền xóa";
             }
-            return Ok(new {message = _message });
+            return Ok(new { message = _message });
         }
         //API xếp hạng nhân viên theo điểm
         [Route("Account/RankEmployee")]
@@ -176,7 +204,7 @@ namespace Contribute_Tracking_System_API.Controllers
             bool _status = true;
             if (apiKey != null)
             {
-                int checkApiKey = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status== true).Select(x => x.apiKey).Count();
+                int checkApiKey = db.EMPLOYEEs.Where(x => x.apiKey == apiKey && x.status == true).Select(x => x.apiKey).Count();
                 if (checkApiKey != 0)
                 {
                     _message = "Danh sách nhân viên!!";
@@ -213,7 +241,8 @@ namespace Contribute_Tracking_System_API.Controllers
         //Load Data
         private IEnumerable<object> LoadData(int id, string level, string status)
         {
-            return db.EMPLOYEEs.Where(x => x.id_employee == id).Select(x => new {
+            return db.EMPLOYEEs.Where(x => x.id_employee == id).Select(x => new
+            {
                 x.id_employee,
                 x.name_employee,
                 x.email,
@@ -241,9 +270,15 @@ namespace Contribute_Tracking_System_API.Controllers
                     employee.password = Encrypt(employee.password);
                     employee.apiKey = RandomAPI(20, false);
                     employee.status = true;
-                    db.EMPLOYEEs.InsertOnSubmit(employee);
-                    db.SubmitChanges();
-                    return Ok(new { message = "Thêm nhân viên thành công!" });
+                    var checkmail = db.EMPLOYEEs.Where(x => x.email == employee.email).Count();
+                    if (checkmail == 0)
+                    {
+                        db.EMPLOYEEs.InsertOnSubmit(employee);
+                        db.SubmitChanges();
+                        return Ok(new { message = "Thêm nhân viên thành công!" });
+                    }
+                    else
+                        return Ok(new { message = "Email này đã tồn tại !!!" });
                 }
                 else
                 {
@@ -255,32 +290,72 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { message = "Vui lòng nhập thông tin" });
             }
         }
-        /// <summary>
-        /// This method 
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns>A string containing </returns>
-        public string Encrypt(string input)
+        public static string Encrypt(string TextToEncrypt)
         {
-            MD5 md5 = System.Security.Cryptography.MD5.Create();
-            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
-            byte[] hashBytes = md5.ComputeHash(inputBytes);
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hashBytes.Length; i++)
-            {
-                sb.Append(hashBytes[i].ToString("X2"));
-            }
-            return sb.ToString();
+            byte[] MyEncryptedArray = UTF8Encoding.UTF8
+               .GetBytes(TextToEncrypt);
+
+            MD5CryptoServiceProvider MyMD5CryptoService = new
+               MD5CryptoServiceProvider();
+
+            byte[] MysecurityKeyArray = MyMD5CryptoService.ComputeHash
+               (UTF8Encoding.UTF8.GetBytes(mysecurityKey));
+
+            MyMD5CryptoService.Clear();
+
+            var MyTripleDESCryptoService = new
+               TripleDESCryptoServiceProvider();
+
+            MyTripleDESCryptoService.Key = MysecurityKeyArray;
+
+            MyTripleDESCryptoService.Mode = CipherMode.ECB;
+
+            MyTripleDESCryptoService.Padding = PaddingMode.PKCS7;
+
+            var MyCrytpoTransform = MyTripleDESCryptoService
+               .CreateEncryptor();
+
+            byte[] MyresultArray = MyCrytpoTransform
+               .TransformFinalBlock(MyEncryptedArray, 0,
+               MyEncryptedArray.Length);
+
+            MyTripleDESCryptoService.Clear();
+
+            return Convert.ToBase64String(MyresultArray, 0,
+               MyresultArray.Length);
+        }
+        public static string Decrypt(string TextToDecrypt)
+        {
+            TextToDecrypt = TextToDecrypt.Replace(" ", "+");
+            byte[] MyDecryptArray = Convert.FromBase64String
+               (TextToDecrypt);
+            MD5CryptoServiceProvider MyMD5CryptoService = new
+               MD5CryptoServiceProvider();
+            byte[] MysecurityKeyArray = MyMD5CryptoService.ComputeHash
+               (UTF8Encoding.UTF8.GetBytes(mysecurityKey));
+            MyMD5CryptoService.Clear();
+            var MyTripleDESCryptoService = new
+               TripleDESCryptoServiceProvider();
+            MyTripleDESCryptoService.Key = MysecurityKeyArray;
+            MyTripleDESCryptoService.Mode = CipherMode.ECB;
+            MyTripleDESCryptoService.Padding = PaddingMode.PKCS7;
+            var MyCrytpoTransform = MyTripleDESCryptoService
+               .CreateDecryptor();
+            byte[] MyresultArray = MyCrytpoTransform
+               .TransformFinalBlock(MyDecryptArray, 0,
+               MyDecryptArray.Length);
+            MyTripleDESCryptoService.Clear();
+
+            return UTF8Encoding.UTF8.GetString(MyresultArray);
         }
         //Client sent mail OTP
-        public bool SendOTP(string from, string to, string subject, string body)
+        public bool SendOTP(string to, string subject, string body)
         {
             bool flags = false;
             try
             {
                 MailMessage mailMessage = new MailMessage();
                 mailMessage.To.Add(to);
-                mailMessage.From = new MailAddress(from);
                 mailMessage.Subject = subject;
                 mailMessage.Body = body;
                 SmtpClient client = new SmtpClient();

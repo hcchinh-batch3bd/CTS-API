@@ -156,7 +156,7 @@ namespace Contribute_Tracking_System_API.Controllers
                 var check = db.EMPLOYEEs.Where(s => s.apiKey.Equals(apiKey)).Select(x => x.id_employee).SingleOrDefault();
                 if (check > 0)
                 {
-                    var complete = db.MISSION_PROCESSes.Where(x => x.id_employee == check && x.id_mission == id).Select(x => x).SingleOrDefault();
+                    var complete = db.MISSION_PROCESSes.Where(x => x.id_employee == check && x.id_mission == id && x.status==0).Select(x => x).SingleOrDefault();
                     complete.status = 1;
                     complete.date = DateTime.Now;
                     var pointmission = db.MISSIONs.Where(a => a.id_mission == id).Select(a => a.point).SingleOrDefault();
@@ -324,10 +324,11 @@ namespace Contribute_Tracking_System_API.Controllers
                 var getCount = db.MISSION_PROCESSes.Where(x => x.id_mission == getMission.id_mission).Count();
                 if (check != null)
                 {
-                    if (getMission != null && getCount-getMission.Count>=0)
+                    if (getMission != null && (getMission.Count- getCount>=0 || getMission.Count==0))
                     {
-                        var create_MS = db.MISSION_PROCESSes.Where(x => x.id_employee == check.id_employee && x.id_mission == getMission.id_mission && (x.status==1)).SingleOrDefault();
-                        if (create_MS == null)
+                        var create_MS = db.MISSION_PROCESSes.Where(x => x.id_employee == check.id_employee && x.id_mission == getMission.id_mission).SingleOrDefault();
+                        var checkProcess = db.MISSION_PROCESSes.Where(x => x.id_mission == getMission.id_mission && x.id_employee == check.id_employee && x.status == 1).SingleOrDefault();
+                        if (create_MS == null || checkProcess!=null)
                         {
                             MISSION_PROCESS mISSION_PROCESS = new MISSION_PROCESS();
                             mISSION_PROCESS.id_employee = check.id_employee;
