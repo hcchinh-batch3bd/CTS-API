@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Web.Http.Cors;
 using System.IO;
+using System.Web;
 
 namespace Contribute_Tracking_System_API.Controllers
 {
@@ -44,7 +45,7 @@ namespace Contribute_Tracking_System_API.Controllers
         public IHttpActionResult GetInfo([FromUri] string apiKey)
         {
             var employee = db.EMPLOYEEs.Where(s => s.apiKey == apiKey).Select(s => new { s.id_employee, s.name_employee, s.point, s.level_employee }).FirstOrDefault();
-            var totalProcess = db.MISSION_PROCESSes.Where(s => s.id_employee == employee.id_employee && s.status == 0).Count();
+            var totalProcess = db.MISSION_PROCESSes.Where(s => s.id_employee == employee.id_employee && s.status == 0 && DateTime.Compare(new DateTime(s.MISSION.Stardate.Year, s.MISSION.Stardate.Month, s.MISSION.Stardate.Day).AddDays(s.MISSION.exprie), DateTime.Now)>0).Count();
             var totalComplete = db.MISSION_PROCESSes.Where(s => s.id_employee == employee.id_employee && s.status == 1).Count();
             return Ok(new
             {
@@ -106,6 +107,7 @@ namespace Contribute_Tracking_System_API.Controllers
         public IHttpActionResult ChangePassword([FromUri] string passold, [FromUri] string passnew, [FromUri] string apiKey)
         {
             string _message = "";
+            bool _status = false;
             if (passold != null && passnew != null && apiKey != null)
             {
                 _message = "Bạn không có quyền đổi mật khẩu tài khoản này !!";
@@ -116,12 +118,13 @@ namespace Contribute_Tracking_System_API.Controllers
                     changpass.apiKey = RandomAPI(10, false);
                     db.SubmitChanges();
                     _message = " Đổi mật khẩu thành công !!";
+                    _status = true;
                 }
                 else
                     _message = "Mật khẩu cũ không đúng !!";
             }
             else _message = "Bạn chưa nhập dầy đủ thông tin !!";
-            return Ok(new { message = _message });
+            return Ok(new { message = _message, status= _status });
         }
         ///
         [Route("Account/ChangepasswordOTP")]
@@ -275,14 +278,14 @@ namespace Contribute_Tracking_System_API.Controllers
                     {
                         db.EMPLOYEEs.InsertOnSubmit(employee);
                         db.SubmitChanges();
-                        return Ok(new { message = "Thêm nhân viên thành công!" });
+                        return Ok(new { message = "Thêm nhân viên thành công!", status = true });
                     }
                     else
-                        return Ok(new { message = "Email này đã tồn tại !!!" });
+                        return Ok(new { message = "Email này đã tồn tại !!!", status = false });
                 }
                 else
                 {
-                    return Ok(new { message = "Không có quyền thêm!" });
+                    return Ok(new { message = "Không có quyền thêm!", status = false });
                 }
             }
             else
@@ -365,7 +368,10 @@ namespace Contribute_Tracking_System_API.Controllers
             catch (Exception ex)
             {
                 flags = false;
-                Console.WriteLine("Error: " + ex.Message);
+                using (StreamWriter sw = new StreamWriter(System.Web.Hosting.HostingEnvironment.MapPath("~/log.txt"), true))
+                {
+                    sw.WriteLine(DateTime.Now+" -send maiL: "+ex.Message);
+                }
             }
             return flags;
         }

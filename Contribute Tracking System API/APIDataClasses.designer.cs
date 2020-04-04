@@ -30,6 +30,9 @@ namespace Contribute_Tracking_System_API
 		
     #region Extensibility Method Definitions
     partial void OnCreated();
+    partial void InsertMISSION_PROCESS(MISSION_PROCESS instance);
+    partial void UpdateMISSION_PROCESS(MISSION_PROCESS instance);
+    partial void DeleteMISSION_PROCESS(MISSION_PROCESS instance);
     partial void InsertEMPLOYEE(EMPLOYEE instance);
     partial void UpdateEMPLOYEE(EMPLOYEE instance);
     partial void DeleteEMPLOYEE(EMPLOYEE instance);
@@ -39,9 +42,6 @@ namespace Contribute_Tracking_System_API
     partial void InsertTYPE_MISSION(TYPE_MISSION instance);
     partial void UpdateTYPE_MISSION(TYPE_MISSION instance);
     partial void DeleteTYPE_MISSION(TYPE_MISSION instance);
-    partial void InsertMISSION_PROCESS(MISSION_PROCESS instance);
-    partial void UpdateMISSION_PROCESS(MISSION_PROCESS instance);
-    partial void DeleteMISSION_PROCESS(MISSION_PROCESS instance);
     #endregion
 		
 		public APIDataClassesDataContext() : 
@@ -74,6 +74,14 @@ namespace Contribute_Tracking_System_API
 			OnCreated();
 		}
 		
+		public System.Data.Linq.Table<MISSION_PROCESS> MISSION_PROCESSes
+		{
+			get
+			{
+				return this.GetTable<MISSION_PROCESS>();
+			}
+		}
+		
 		public System.Data.Linq.Table<EMPLOYEE> EMPLOYEEs
 		{
 			get
@@ -97,12 +105,244 @@ namespace Contribute_Tracking_System_API
 				return this.GetTable<TYPE_MISSION>();
 			}
 		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.MISSION_PROCESS")]
+	public partial class MISSION_PROCESS : INotifyPropertyChanging, INotifyPropertyChanged
+	{
 		
-		public System.Data.Linq.Table<MISSION_PROCESS> MISSION_PROCESSes
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _id_employee;
+		
+		private int _id_mission;
+		
+		private int _status;
+		
+		private System.Nullable<System.DateTime> _date;
+		
+		private int _id;
+		
+		private EntityRef<EMPLOYEE> _EMPLOYEE;
+		
+		private EntityRef<MISSION> _MISSION;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void Onid_employeeChanging(int value);
+    partial void Onid_employeeChanged();
+    partial void Onid_missionChanging(int value);
+    partial void Onid_missionChanged();
+    partial void OnstatusChanging(int value);
+    partial void OnstatusChanged();
+    partial void OndateChanging(System.Nullable<System.DateTime> value);
+    partial void OndateChanged();
+    partial void OnidChanging(int value);
+    partial void OnidChanged();
+    #endregion
+		
+		public MISSION_PROCESS()
+		{
+			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
+			this._MISSION = default(EntityRef<MISSION>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_employee", DbType="Int NOT NULL")]
+		public int id_employee
 		{
 			get
 			{
-				return this.GetTable<MISSION_PROCESS>();
+				return this._id_employee;
+			}
+			set
+			{
+				if ((this._id_employee != value))
+				{
+					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Onid_employeeChanging(value);
+					this.SendPropertyChanging();
+					this._id_employee = value;
+					this.SendPropertyChanged("id_employee");
+					this.Onid_employeeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_mission", DbType="Int NOT NULL")]
+		public int id_mission
+		{
+			get
+			{
+				return this._id_mission;
+			}
+			set
+			{
+				if ((this._id_mission != value))
+				{
+					if (this._MISSION.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.Onid_missionChanging(value);
+					this.SendPropertyChanging();
+					this._id_mission = value;
+					this.SendPropertyChanged("id_mission");
+					this.Onid_missionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_status", DbType="Int NOT NULL")]
+		public int status
+		{
+			get
+			{
+				return this._status;
+			}
+			set
+			{
+				if ((this._status != value))
+				{
+					this.OnstatusChanging(value);
+					this.SendPropertyChanging();
+					this._status = value;
+					this.SendPropertyChanged("status");
+					this.OnstatusChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date")]
+		public System.Nullable<System.DateTime> date
+		{
+			get
+			{
+				return this._date;
+			}
+			set
+			{
+				if ((this._date != value))
+				{
+					this.OndateChanging(value);
+					this.SendPropertyChanging();
+					this._date = value;
+					this.SendPropertyChanged("date");
+					this.OndateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int id
+		{
+			get
+			{
+				return this._id;
+			}
+			set
+			{
+				if ((this._id != value))
+				{
+					this.OnidChanging(value);
+					this.SendPropertyChanging();
+					this._id = value;
+					this.SendPropertyChanged("id");
+					this.OnidChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_MISSION_PROCESS", Storage="_EMPLOYEE", ThisKey="id_employee", OtherKey="id_employee", IsForeignKey=true)]
+		public EMPLOYEE EMPLOYEE
+		{
+			get
+			{
+				return this._EMPLOYEE.Entity;
+			}
+			set
+			{
+				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
+				if (((previousValue != value) 
+							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._EMPLOYEE.Entity = null;
+						previousValue.MISSION_PROCESSes.Remove(this);
+					}
+					this._EMPLOYEE.Entity = value;
+					if ((value != null))
+					{
+						value.MISSION_PROCESSes.Add(this);
+						this._id_employee = value.id_employee;
+					}
+					else
+					{
+						this._id_employee = default(int);
+					}
+					this.SendPropertyChanged("EMPLOYEE");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MISSION_MISSION_PROCESS", Storage="_MISSION", ThisKey="id_mission", OtherKey="id_mission", IsForeignKey=true)]
+		public MISSION MISSION
+		{
+			get
+			{
+				return this._MISSION.Entity;
+			}
+			set
+			{
+				MISSION previousValue = this._MISSION.Entity;
+				if (((previousValue != value) 
+							|| (this._MISSION.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._MISSION.Entity = null;
+						previousValue.MISSION_PROCESSes.Remove(this);
+					}
+					this._MISSION.Entity = value;
+					if ((value != null))
+					{
+						value.MISSION_PROCESSes.Add(this);
+						this._id_mission = value.id_mission;
+					}
+					else
+					{
+						this._id_mission = default(int);
+					}
+					this.SendPropertyChanged("MISSION");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 	}
@@ -131,11 +371,11 @@ namespace Contribute_Tracking_System_API
 		
 		private string _apiKey;
 		
+		private EntitySet<MISSION_PROCESS> _MISSION_PROCESSes;
+		
 		private EntitySet<MISSION> _MISSIONs;
 		
 		private EntitySet<TYPE_MISSION> _TYPE_MISSIONs;
-		
-		private EntitySet<MISSION_PROCESS> _MISSION_PROCESSes;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -163,9 +403,9 @@ namespace Contribute_Tracking_System_API
 		
 		public EMPLOYEE()
 		{
+			this._MISSION_PROCESSes = new EntitySet<MISSION_PROCESS>(new Action<MISSION_PROCESS>(this.attach_MISSION_PROCESSes), new Action<MISSION_PROCESS>(this.detach_MISSION_PROCESSes));
 			this._MISSIONs = new EntitySet<MISSION>(new Action<MISSION>(this.attach_MISSIONs), new Action<MISSION>(this.detach_MISSIONs));
 			this._TYPE_MISSIONs = new EntitySet<TYPE_MISSION>(new Action<TYPE_MISSION>(this.attach_TYPE_MISSIONs), new Action<TYPE_MISSION>(this.detach_TYPE_MISSIONs));
-			this._MISSION_PROCESSes = new EntitySet<MISSION_PROCESS>(new Action<MISSION_PROCESS>(this.attach_MISSION_PROCESSes), new Action<MISSION_PROCESS>(this.detach_MISSION_PROCESSes));
 			OnCreated();
 		}
 		
@@ -189,7 +429,7 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name_employee", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name_employee", DbType="NVarChar(1000) NOT NULL", CanBeNull=false)]
 		public string name_employee
 		{
 			get
@@ -209,7 +449,7 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_email", DbType="VarChar(50) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_email", DbType="VarChar(2000)")]
 		public string email
 		{
 			get
@@ -349,6 +589,19 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_MISSION_PROCESS", Storage="_MISSION_PROCESSes", ThisKey="id_employee", OtherKey="id_employee")]
+		public EntitySet<MISSION_PROCESS> MISSION_PROCESSes
+		{
+			get
+			{
+				return this._MISSION_PROCESSes;
+			}
+			set
+			{
+				this._MISSION_PROCESSes.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_MISSION", Storage="_MISSIONs", ThisKey="id_employee", OtherKey="id_employee")]
 		public EntitySet<MISSION> MISSIONs
 		{
@@ -375,19 +628,6 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_MISSION_PROCESS", Storage="_MISSION_PROCESSes", ThisKey="id_employee", OtherKey="id_employee")]
-		public EntitySet<MISSION_PROCESS> MISSION_PROCESSes
-		{
-			get
-			{
-				return this._MISSION_PROCESSes;
-			}
-			set
-			{
-				this._MISSION_PROCESSes.Assign(value);
-			}
-		}
-		
 		public event PropertyChangingEventHandler PropertyChanging;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -406,6 +646,18 @@ namespace Contribute_Tracking_System_API
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_MISSION_PROCESSes(MISSION_PROCESS entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = this;
+		}
+		
+		private void detach_MISSION_PROCESSes(MISSION_PROCESS entity)
+		{
+			this.SendPropertyChanging();
+			entity.EMPLOYEE = null;
 		}
 		
 		private void attach_MISSIONs(MISSION entity)
@@ -427,18 +679,6 @@ namespace Contribute_Tracking_System_API
 		}
 		
 		private void detach_TYPE_MISSIONs(TYPE_MISSION entity)
-		{
-			this.SendPropertyChanging();
-			entity.EMPLOYEE = null;
-		}
-		
-		private void attach_MISSION_PROCESSes(MISSION_PROCESS entity)
-		{
-			this.SendPropertyChanging();
-			entity.EMPLOYEE = this;
-		}
-		
-		private void detach_MISSION_PROCESSes(MISSION_PROCESS entity)
 		{
 			this.SendPropertyChanging();
 			entity.EMPLOYEE = null;
@@ -531,7 +771,7 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name_mission", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name_mission", DbType="NVarChar(2000) NOT NULL", CanBeNull=false)]
 		public string name_mission
 		{
 			get
@@ -896,7 +1136,7 @@ namespace Contribute_Tracking_System_API
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name_type_mission", DbType="NVarChar(100) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_name_type_mission", DbType="NVarChar(2000) NOT NULL", CanBeNull=false)]
 		public string name_type_mission
 		{
 			get
@@ -1057,246 +1297,6 @@ namespace Contribute_Tracking_System_API
 		{
 			this.SendPropertyChanging();
 			entity.TYPE_MISSION = null;
-		}
-	}
-	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.MISSION_PROCESS")]
-	public partial class MISSION_PROCESS : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private int _id_employee;
-		
-		private int _id_mission;
-		
-		private int _status;
-		
-		private System.Nullable<System.DateTime> _date;
-		
-		private int _id;
-		
-		private EntityRef<EMPLOYEE> _EMPLOYEE;
-		
-		private EntityRef<MISSION> _MISSION;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void Onid_employeeChanging(int value);
-    partial void Onid_employeeChanged();
-    partial void Onid_missionChanging(int value);
-    partial void Onid_missionChanged();
-    partial void OnstatusChanging(int value);
-    partial void OnstatusChanged();
-    partial void OndateChanging(System.Nullable<System.DateTime> value);
-    partial void OndateChanged();
-    partial void OnidChanging(int value);
-    partial void OnidChanged();
-    #endregion
-		
-		public MISSION_PROCESS()
-		{
-			this._EMPLOYEE = default(EntityRef<EMPLOYEE>);
-			this._MISSION = default(EntityRef<MISSION>);
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_employee", DbType="Int NOT NULL")]
-		public int id_employee
-		{
-			get
-			{
-				return this._id_employee;
-			}
-			set
-			{
-				if ((this._id_employee != value))
-				{
-					if (this._EMPLOYEE.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.Onid_employeeChanging(value);
-					this.SendPropertyChanging();
-					this._id_employee = value;
-					this.SendPropertyChanged("id_employee");
-					this.Onid_employeeChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id_mission", DbType="Int NOT NULL")]
-		public int id_mission
-		{
-			get
-			{
-				return this._id_mission;
-			}
-			set
-			{
-				if ((this._id_mission != value))
-				{
-					if (this._MISSION.HasLoadedOrAssignedValue)
-					{
-						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
-					}
-					this.Onid_missionChanging(value);
-					this.SendPropertyChanging();
-					this._id_mission = value;
-					this.SendPropertyChanged("id_mission");
-					this.Onid_missionChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_status", DbType="Int NOT NULL")]
-		public int status
-		{
-			get
-			{
-				return this._status;
-			}
-			set
-			{
-				if ((this._status != value))
-				{
-					this.OnstatusChanging(value);
-					this.SendPropertyChanging();
-					this._status = value;
-					this.SendPropertyChanged("status");
-					this.OnstatusChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_date", DbType="Date")]
-		public System.Nullable<System.DateTime> date
-		{
-			get
-			{
-				return this._date;
-			}
-			set
-			{
-				if ((this._date != value))
-				{
-					this.OndateChanging(value);
-					this.SendPropertyChanging();
-					this._date = value;
-					this.SendPropertyChanged("date");
-					this.OndateChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_id", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int id
-		{
-			get
-			{
-				return this._id;
-			}
-			set
-			{
-				if ((this._id != value))
-				{
-					this.OnidChanging(value);
-					this.SendPropertyChanging();
-					this._id = value;
-					this.SendPropertyChanged("id");
-					this.OnidChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="EMPLOYEE_MISSION_PROCESS", Storage="_EMPLOYEE", ThisKey="id_employee", OtherKey="id_employee", IsForeignKey=true)]
-		public EMPLOYEE EMPLOYEE
-		{
-			get
-			{
-				return this._EMPLOYEE.Entity;
-			}
-			set
-			{
-				EMPLOYEE previousValue = this._EMPLOYEE.Entity;
-				if (((previousValue != value) 
-							|| (this._EMPLOYEE.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._EMPLOYEE.Entity = null;
-						previousValue.MISSION_PROCESSes.Remove(this);
-					}
-					this._EMPLOYEE.Entity = value;
-					if ((value != null))
-					{
-						value.MISSION_PROCESSes.Add(this);
-						this._id_employee = value.id_employee;
-					}
-					else
-					{
-						this._id_employee = default(int);
-					}
-					this.SendPropertyChanged("EMPLOYEE");
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="MISSION_MISSION_PROCESS", Storage="_MISSION", ThisKey="id_mission", OtherKey="id_mission", IsForeignKey=true)]
-		public MISSION MISSION
-		{
-			get
-			{
-				return this._MISSION.Entity;
-			}
-			set
-			{
-				MISSION previousValue = this._MISSION.Entity;
-				if (((previousValue != value) 
-							|| (this._MISSION.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._MISSION.Entity = null;
-						previousValue.MISSION_PROCESSes.Remove(this);
-					}
-					this._MISSION.Entity = value;
-					if ((value != null))
-					{
-						value.MISSION_PROCESSes.Add(this);
-						this._id_mission = value.id_mission;
-					}
-					else
-					{
-						this._id_mission = default(int);
-					}
-					this.SendPropertyChanged("MISSION");
-				}
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
 		}
 	}
 }
