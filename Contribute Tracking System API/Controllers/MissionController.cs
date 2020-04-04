@@ -511,18 +511,15 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             if (mission != null && apiKey != null)
             {
-                var check = db.EMPLOYEEs.Where(x => x.apiKey.Equals(apiKey) && x.level_employee == true).Select(x => x).FirstOrDefault();
+                var check = db.EMPLOYEEs.Where(x => x.apiKey.Equals(apiKey) && x.level_employee == true && x.status == true).Select(x => x).FirstOrDefault();
                 if (check!= null)
                 {
                     var update = db.MISSIONs.Where(x => x.id_mission == mission.id_mission).ToList();
                     update.ForEach(x =>
                     {
                         x.name_mission = mission.name_mission;
-                        x.id_type = mission.id_type;
                         x.describe = mission.describe;
-                        x.Count = mission.Count;
-                        x.point = mission.point;
-                        x.id_employee = x.id_employee;
+                      
                     });
                     db.SubmitChanges();
                     return Ok(new { massage = "Sửa nhiệm vụ thành công!" });
