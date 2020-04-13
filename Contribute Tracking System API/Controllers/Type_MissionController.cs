@@ -18,7 +18,6 @@ namespace Contribute_Tracking_System_API.Controllers
         /// <returns> a json contraining result value(id_type, name_type_mission, id+employee, status, date)</returns>
         [Route("Type_Mission/GetAll")]
         [HttpGet]
-        // GET: Type_mission Lấy tất cả loại nhiệm vụ
         public IEnumerable<object> GetAll()
         {
             return db.TYPE_MISSIONs.Select(x => new {
@@ -103,7 +102,6 @@ namespace Contribute_Tracking_System_API.Controllers
         /// <returns> a json contraining result a message </returns>
         [Route("Type_Mission/Edit")]
         [HttpPut]
-        // PUT: /Type_Mission?apiKey  Sửa loại nhiệm vụ
         public IHttpActionResult Put([FromBody]TYPE_MISSION type_mission, string apiKey)
         {
             if (type_mission != null)
@@ -139,7 +137,6 @@ namespace Contribute_Tracking_System_API.Controllers
         /// <returns>a json contraining result a message</returns>
         [Route("Type_Mission/{id}/Remove")]
         [HttpPut]
-        // PUT:Type_Mission/id/apiKey  Xóa loại nhiệm vụ theo id
         public IHttpActionResult Put(int id, [FromUri] string apiKey)
         {
             var check = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x=>x.level_employee).FirstOrDefault();

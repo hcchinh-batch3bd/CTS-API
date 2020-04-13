@@ -57,11 +57,6 @@ namespace Contribute_Tracking_System_API.Controllers
                 totalComplete = totalComplete
             });
         }
-        /// <summary>
-        /// This method will sent OTP(One time password) to mail of account request forget password
-        /// </summary>
-        /// <param name="mail">mail of account forget password</param>
-        /// <returns>a json containing message </returns>
         [Route("Account/OTP")]
         [HttpGet]
         public IHttpActionResult SendOTP([FromUri] string OTP, [FromUri] string mail)
@@ -101,7 +96,6 @@ namespace Contribute_Tracking_System_API.Controllers
 
         }
         private const string mysecurityKey = "CTSOTP12";
-        //Đổi mật khẩu
         [Route("Account/Changepassword")]
         [HttpPut]
         public IHttpActionResult ChangePassword([FromUri] string passold, [FromUri] string passnew, [FromUri] string apiKey)
@@ -149,7 +143,6 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Bạn chưa nhập dầy đủ thông tin !!";
             return Ok(new { message = _message });
         }
-        //API xóa một nhân viên
         [Route("Account/{id}/DeleteEmployee")]
         [HttpPut]
         public IHttpActionResult DeleteEmployee(int id, [FromUri] string apiKey)
@@ -177,7 +170,6 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             return Ok(new { message = _message });
         }
-        //API xếp hạng nhân viên theo điểm
         [Route("Account/RankEmployee")]
         [HttpGet]
         public IHttpActionResult RankEmployee([FromUri] string apiKey)
@@ -197,7 +189,6 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             return Ok(new { results = "", status = _status, message = _message });
         }
-        //Load List Employee
         [Route("Account/ListEmployee")]
         [HttpGet]
         public IHttpActionResult GetListEmployee([FromUri] string apiKey)
@@ -241,7 +232,6 @@ namespace Contribute_Tracking_System_API.Controllers
 
             else return Ok(new { results = "", status = _status, message = _message });
         }
-        //Load Data
         private IEnumerable<object> LoadData(int id, string level, string status)
         {
             return db.EMPLOYEEs.Where(x => x.id_employee == id).Select(x => new
@@ -255,12 +245,6 @@ namespace Contribute_Tracking_System_API.Controllers
                 status
             });
         }
-        /// <summary>
-        /// This method create employe
-        /// </summary>
-        /// <param name="employee"></param>
-        /// <param name="apiKey"></param>
-        /// <returns>a json contraining reslut a message</returns>
         [Route("Employee/Create")]
         [HttpPost]
         public IHttpActionResult Post([FromBody] EMPLOYEE employee, [FromUri] string apiKey)
@@ -351,7 +335,6 @@ namespace Contribute_Tracking_System_API.Controllers
 
             return UTF8Encoding.UTF8.GetString(MyresultArray);
         }
-        //Client sent mail OTP
         public bool SendOTP(string to, string subject, string body)
         {
             bool flags = false;

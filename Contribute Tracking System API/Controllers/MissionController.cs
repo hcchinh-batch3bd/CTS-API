@@ -17,7 +17,6 @@ namespace Contribute_Tracking_System_API.Controllers
     public class MissionController : ApiController
     {
         private APIDataClassesDataContext db = new APIDataClassesDataContext();
-        //Hủy Mission
         [Route("Mission/{id}/ClearMission")]
         [HttpPut]
         public IHttpActionResult ClearMission(int id, [FromUri] string apiKey)
@@ -62,7 +61,6 @@ namespace Contribute_Tracking_System_API.Controllers
 
 
         }
-        //Get List Mission
         [Route("Mission/ListMissionComplete")]
         [HttpGet]
         public IHttpActionResult GetListMissonComplete([FromUri] string apiKey)
@@ -118,8 +116,6 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { results = "", status = "false", message = "Not Found apiKey" });
 
         }
-        #region Search List mission complete
-        #endregion
         [Route("Mission/ListMissionComplete/Search")]
         [HttpGet]
         public IHttpActionResult GetListMissonCompleteSearch([FromUri] string key, [FromUri] string apiKey)
@@ -142,7 +138,6 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { results = "", status = "false", message = "Bad request" });
 
         }
-        //Get Describe Mission
         [Route("Mission/{id}/Describe")]
         [HttpGet]
         public IHttpActionResult GetDescribeMission(int id)
@@ -169,7 +164,6 @@ namespace Contribute_Tracking_System_API.Controllers
             }
 
         }
-        //Create Mission
         [Route("Mission/Create")]
         [HttpPost]
         public IHttpActionResult PostMission(MISSION mission, [FromUri] string apiKey)
@@ -197,7 +191,6 @@ namespace Contribute_Tracking_System_API.Controllers
             else
                 return Ok(new { message = "Not Found apiKey" });
         }
-        //Complete Mission
         [Route("Mission/{id}/CompleteMission")]
         [HttpPut]
         public IHttpActionResult CompleteMission(int id, [FromUri] string apiKey)
@@ -225,7 +218,6 @@ namespace Contribute_Tracking_System_API.Controllers
                 return Ok(new { message = "Not Found apiKey" });
 
         }
-        //Confim Mission of Admin
         [Route("Mission/{id}/Confirm")]
         [HttpPut]
         public IHttpActionResult ConfirmMission(int id, [FromUri] string apiKey)
@@ -290,7 +282,6 @@ namespace Contribute_Tracking_System_API.Controllers
             else
                 return Ok(new { message = "Not Found apiKey" });
         }
-        //Get Search Mission available
         [Route("Mission/Search")]
         [HttpGet]
         public IHttpActionResult GetSearchMission([FromUri] string key)
@@ -328,7 +319,6 @@ namespace Contribute_Tracking_System_API.Controllers
             return Ok(new { results = result, status = _status, message = _message });
 
         }
-        //Get list mission available
         [Route("Missison/Missionavailable")]
         [HttpGet]
         public IHttpActionResult Missonavailable()
@@ -366,7 +356,6 @@ namespace Contribute_Tracking_System_API.Controllers
             }
             return Ok(new { results = key, status = _status, message = _message });
         }
-        //Search list mission process
         [Route("Mission/Missionavailableemp/Search")]
         [HttpGet]
         public IHttpActionResult MissionavailableempSearch([FromUri] string key, [FromUri] string apiKey)
@@ -397,46 +386,35 @@ namespace Contribute_Tracking_System_API.Controllers
             else _message = "Bạn chưa nhập apiKey";
             return Ok(new { results = miss, status = _status, message = _message });
         }
-        //Get list mission process of employee
         [Route("Mission/Missionavailableemp")]
         [HttpGet]
         public IHttpActionResult Missionavailableemp([FromUri] string apiKey)
         {
-            List<object> miss = new List<object>();
+            object miss = null;
             string _message = "";
             bool _status = true;
             if (apiKey != null)
             {
                 _message = "Danh sách nhiệm vụ đang làm của 1 nhân viên";
                 _status = true;
-                var id = db.EMPLOYEEs.Where(x => x.apiKey == apiKey).Select(x => x.id_employee).SingleOrDefault();
-                foreach (var t in db.MISSION_PROCESSes.Where(x=>x.id_employee==id && x.MISSION.status==1))
+                var result = db.MISSION_PROCESSes.Where(x => x.EMPLOYEE.apiKey ==apiKey && DateTime.Compare(new DateTime(x.MISSION.Stardate.Year, x.MISSION.Stardate.Month, x.MISSION.Stardate.Day).AddDays(x.MISSION.exprie), DateTime.Now) > 0 && x.status == 0).Select(a => new
                 {
-                    if (t.id_employee == id)
-                    {
-                                miss.AddRange(from a in db.MISSIONs 
-                                join c in db.EMPLOYEEs on a.id_employee equals c.id_employee 
-                                where t.status == 0 && t.id_employee == id && a.id_mission== t.id_mission && DateTime.Compare(new DateTime(a.Stardate.Year, a.Stardate.Month, a.Stardate.Day).AddDays(a.exprie), DateTime.Now) > 0
-                                              select new
-                                {
-                                    a.id_mission,
-                                    a.name_mission,
-                                    a.Stardate,
-                                    a.point,
-                                    a.exprie,
-                                    a.describe,
-                                    a.id_type,
-                                    a.TYPE_MISSION.name_type_mission,
-                                    c.id_employee,
-                                    c.name_employee
-                                });
-                    }
-                }
+                    a.id_mission,
+                    a.MISSION.name_mission,
+                    a.MISSION.Stardate,
+                    a.MISSION.point,
+                    a.MISSION.exprie,
+                    a.MISSION.describe,
+                    a.MISSION.id_type,
+                    a.MISSION.TYPE_MISSION.name_type_mission,
+                    a.id_employee,
+                    a.EMPLOYEE.name_employee
+                }).ToList();
+                miss = result;
             }
             else _message = "Bạn chưa nhập apiKey";
             return Ok(new { results = miss, status = _status, message = _message });
         }
-        //Get list mission
         [Route("Mission/ListMission")]
         [HttpGet]
         public IHttpActionResult GetListMission()
@@ -482,11 +460,11 @@ namespace Contribute_Tracking_System_API.Controllers
                             mISSION_PROCESS.id_mission = getMission.id_mission;
                             db.MISSION_PROCESSes.InsertOnSubmit(mISSION_PROCESS);
                             db.SubmitChanges();
-                            return Ok(new { message = "Nhận nhiệm vụ thành công !!" });
+                            return Ok(new { message = _message });
                         }
                         else
                         {
-                            return Ok(new { message = "Nhiệm vụ này đã nhận rồi hãy đến hoàn thành nó. Nếu bạn không thấy không danh sách đang làm có thể nó đang được chờ duyệt !!" });
+                            return Ok(new { message = "Nhiệm vụ này đã nhận rồi hãy đến hoàn thành nó !!" });
                         }
                     }
                     else
@@ -511,30 +489,29 @@ namespace Contribute_Tracking_System_API.Controllers
         {
             if (mission != null && apiKey != null)
             {
-                var check = db.EMPLOYEEs.Where(x => x.apiKey.Equals(apiKey) && x.level_employee == true).Select(x => x).FirstOrDefault();
+                var check = db.EMPLOYEEs.Where(x => x.apiKey.Equals(apiKey) && x.level_employee == true && x.status==true).Select(x => x).FirstOrDefault();
                 if (check!= null)
                 {
-                    var update = db.MISSIONs.Where(x => x.id_type == mission.id_type).ToList();
+                    var update = db.MISSIONs.Where(x => x.id_mission == mission.id_mission).ToList();
                     update.ForEach(x =>
                     {
                         x.name_mission = mission.name_mission;
                         x.id_type = mission.id_type;
                         x.describe = mission.describe;
                         x.Count = mission.Count;
-                        x.point = mission.point;
                         x.id_employee = x.id_employee;
                     });
                     db.SubmitChanges();
-                    return Ok(new { massage = "Sửa nhiệm vụ thành công!" });
-                }
+                    return Ok(new { message = "Sửa nhiệm vụ thành công !!" });
+                } 
                 else
                 {
-                    return Ok(new { massage = "Không có quyền sửa!" });
+                    return Ok(new { message = "Không có quyền sửa!" });
                 }
             }
             else
             {
-                return Ok(new { massage = "Vui lòng nhập thông tin!" });
+                return Ok(new { message = "Vui lòng nhập thông tin!" });
             }
         }
     }
