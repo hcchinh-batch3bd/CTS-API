@@ -164,7 +164,7 @@ namespace Contribute_Tracking_System_API.Controllers
                             db.SubmitChanges();
                             _message = "Xóa thành công";
                         }else
-                        _message = "Tài khoản này đã bị xoá từ trước";
+                        return Ok(new { message = "Tài khoản này đã bị xoá từ trước"});
                         
                     }
                 }
