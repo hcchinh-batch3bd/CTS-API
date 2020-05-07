@@ -163,6 +163,8 @@ namespace Contribute_Tracking_System_API.Controllers
                             employee.status = changeStatus;
                             db.SubmitChanges();
                             _message = "Xóa thành công";
+                        }else{
+                        _message = "Tài khoản này đã bị xoá từ trước";
                         }
                     }
                 }
